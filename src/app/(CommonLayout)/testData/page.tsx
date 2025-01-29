@@ -1,13 +1,5 @@
-
-import { getTestData } from '../../../services/getReq';
-
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  category: string;
-  inStock: boolean;
-}
+import { getTestData } from "../../../services/getReq";
+import { TestData } from "../../../models/testData";
 
 export default async function TestPageData() {
   try {
@@ -18,7 +10,7 @@ export default async function TestPageData() {
       <>
         <h1 className="bg-red-200 p-4 text-lg font-bold">Navbar</h1>
         <ul className="p-4">
-          {allData.map((product: Product) => (
+          {allData.map((product: TestData) => (
             <li key={product._id} className="border-b p-2">
               {product.name} -{" "}
               <span className="font-semibold">${product.price}</span>

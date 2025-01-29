@@ -1,12 +1,17 @@
 import { connectDB } from "@/lib/connectDB";
 import { NextResponse } from "next/server";
+import { Db, Collection } from "mongodb";
+import { TestData } from '../../../../../models/testData';
 
-export const GET = async () => {
-  const db = await connectDB();
-  const dataCollection = db.collection("test_data");
+
+
+export const GET = async (): Promise<NextResponse> => {
+  const db: Db = await connectDB();
+  const dataCollection: Collection<TestData> =
+    db.collection<TestData>("test_data");
 
   try {
-    const testData = await dataCollection.find().toArray();
+    const testData: TestData[] = await dataCollection.find().toArray();
 
     return new NextResponse(JSON.stringify({ testData }), { status: 200 });
   } catch {
