@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthProvider from "../services/AutProvider";
 
 export const metadata: Metadata = {
   title: "99 Publication",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <AuthProvider>
+        <body className=" font-poppins">{children}</body>
+      </AuthProvider>
     </html>
   );
 }

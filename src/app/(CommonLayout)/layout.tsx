@@ -10,10 +10,5 @@ export default function CommonLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div>
-      <h1>Common Navbar</h1>
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
