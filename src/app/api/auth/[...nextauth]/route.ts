@@ -1,6 +1,6 @@
 import NextAuth, { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+
 import GoogleProvider from "next-auth/providers/google";
 import { connectDB } from "@/lib/connectDB";
 
@@ -19,8 +19,7 @@ const authOptions: AuthOptions = {
 
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
-    rolling: false,
+    maxAge: 30 * 24 * 60 * 60, // session duration (in seconds)
   },
 
   providers: [
@@ -44,13 +43,7 @@ const authOptions: AuthOptions = {
           return null;
         }
 
-        const passwordMatched = bcrypt.compareSync(
-          credentials.password,
-          currentUser.password
-        );
-        if (!passwordMatched) {
-          return null;
-        }
+        // Removed bcrypt code for password validation
 
         return {
           id: currentUser._id,

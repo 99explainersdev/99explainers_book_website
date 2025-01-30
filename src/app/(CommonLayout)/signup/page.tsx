@@ -12,7 +12,7 @@ const SignUpPage = () => {
 
   const [error, setError] = useState(""); // State for error message
 
-  const handleSocialLogin = async (provider) => {
+  const handleSocialLogin = async (provider: string) => {
     try {
       await signIn(provider, {
         redirect: true,
@@ -22,25 +22,29 @@ const SignUpPage = () => {
       console.error("Social login error:", error);
     }
   };
-
-  const handleSignUp = async (e) => {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(""); // Reset error before new request
 
+    const form = e.target as HTMLFormElement; // Explicitly cast e.target
+
     const newUser = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      password: e.target.password.value,
+      name: (form.elements.namedItem("name") as HTMLInputElement).value,
+      email: (form.elements.namedItem("email") as HTMLInputElement).value,
+      password: (form.elements.namedItem("password") as HTMLInputElement).value,
     };
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/signup/api`, {
-        method: "POST",
-        body: JSON.stringify(newUser),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/signup/api`,
+        {
+          method: "POST",
+          body: JSON.stringify(newUser),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (res.status === 409) {
         setError("User with this email already exists.");

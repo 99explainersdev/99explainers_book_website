@@ -1,12 +1,12 @@
 import { connectDB } from "@/lib/connectDB";
 import { NextResponse } from "next/server";
-import { Db, Collection } from "mongodb";
+import {  Collection } from "mongodb";
 import { TestData } from '../../../../../models/testData';
 
 
 
 export const GET = async (): Promise<NextResponse> => {
-  const db: Db = await connectDB();
+  const db= await connectDB();
   const dataCollection: Collection<TestData> =
     db.collection<TestData>("test_data");
 

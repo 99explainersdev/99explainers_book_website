@@ -3,8 +3,8 @@ import { TestData } from "../../../models/testData";
 
 export default async function TestPageData() {
   try {
-    const response = await getTestData();
-    const allData = response.testData;
+    const response = await getTestData(); // Assuming response is an array of TestData
+    const allData = response; // No need for .testData
 
     return (
       <>
