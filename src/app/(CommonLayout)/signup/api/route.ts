@@ -27,7 +27,7 @@ export const POST = async (request: Request): Promise<Response> => {
 
     // Assign default role
     let role = "user";
-    if (newUser.email === "admin@gmail.com") {
+    if (newUser.email === "yousufj93006@gmail.com") {
       role = "admin";
     }
 

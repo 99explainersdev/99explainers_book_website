@@ -1,55 +1,43 @@
-import NextAuth, { AuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
 import GoogleProvider from "next-auth/providers/google";
 import { connectDB } from "@/lib/connectDB";
+import { User } from '../../../../models/User';
 
-interface User {
-  _id: string;
-  email: string;
-  password?: string;
-  name?: string;
-  image?: string;
-  role: string;
-  provider?: string;
-}
-
-const authOptions: AuthOptions = {
+const handler = NextAuth({
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
 
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // session duration (in seconds)
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
   providers: [
     CredentialsProvider({
-      name: "credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: {},
+        password: {},
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          throw new Error("Invalid credentials");
         }
 
-        const db: Db = await connectDB();
-        const currentUser = await db
-          .collection<User>("users")
+        const db = await connectDB();
+        const user = await db
+          .collection<User>("users") // Use the User type here
           .findOne({ email: credentials.email });
 
-        if (!currentUser || !currentUser.password) {
-          return null;
+        if (!user) {
+          throw new Error("User not found");
         }
 
-        // Removed bcrypt code for password validation
-
+        // Return the user object with the required fields
         return {
-          id: currentUser._id,
-          email: currentUser.email,
-          name: currentUser.name,
-          role: currentUser.role,
+          id: user._id?.toString(), // Ensure _id is converted to string
+          name: user.name,
+          email: user.email,
+          role: user.role, // ✅ Ensure role is passed
         };
       },
     }),
@@ -66,8 +54,8 @@ const authOptions: AuthOptions = {
 
   callbacks: {
     async signIn({ user, account }) {
-      const db: Db = await connectDB();
-      const userCollection = db.collection<User>("users");
+      const db = await connectDB();
+      const userCollection = db.collection<User>("users"); // Use the User type here
 
       if (account?.provider === "google" && user.email) {
         const existingUser = await userCollection.findOne({
@@ -80,26 +68,32 @@ const authOptions: AuthOptions = {
             name: user.name,
             image: user.image,
             provider: account.provider,
-            role: "user",
+            role: "user", // Default role
           });
         }
       }
-
       return true;
-    },
-
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.role = token.role as string;
-      }
-      return session;
     },
 
     async jwt({ token, user }) {
       if (user) {
-        token.role = (user as User).role;
+        token.role = user.role || "user"; // ✅ Ensure role is stored
+      } else {
+        const db = await connectDB();
+        const existingUser = await db
+          .collection<User>("users") // Use the User type here
+          .findOne({ email: token.email });
+
+        if (existingUser) {
+          token.role = existingUser.role; // ✅ Fetch role from DB
+        }
       }
       return token;
+    },
+
+    async session({ session, token }) {
+      session.user.role = token.role; // ✅ Ensure role is in session
+      return session;
     },
 
     async redirect({ url, baseUrl, token }) {
@@ -109,8 +103,6 @@ const authOptions: AuthOptions = {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };

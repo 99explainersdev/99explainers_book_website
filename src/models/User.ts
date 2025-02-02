@@ -1,8 +1,11 @@
 export type User = {
-  _id: string;
+  id?: string;
+  _id?: string;
   email: string;
-  name: string;
+  password?: string;
+  name?: string;
   image?: string;
-  provider: "google";
-  role: "user" | "admin"; 
+  role: string; // Add the `role` property
+  provider?: string;
 };
+
