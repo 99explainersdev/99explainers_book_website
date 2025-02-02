@@ -2,7 +2,8 @@ import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { connectDB } from "@/lib/connectDB";
-import { User } from '../../../../models/User';
+import { User } from "../../../../models/User";
+import { Collection } from "mongodb";
 
 const handler = NextAuth({
   secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
@@ -24,9 +25,8 @@ const handler = NextAuth({
         }
 
         const db = await connectDB();
-        const user = await db
-          .collection<User>("users") // Use the User type here
-          .findOne({ email: credentials.email });
+        const userCollection: Collection<User> = db.collection("users"); // Correct type definition
+        const user = await userCollection.findOne({ email: credentials.email });
 
         if (!user) {
           throw new Error("User not found");
@@ -55,7 +55,7 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account }) {
       const db = await connectDB();
-      const userCollection = db.collection<User>("users"); // Use the User type here
+      const userCollection: Collection<User> = db.collection("users"); // Use the User type here
 
       if (account?.provider === "google" && user.email) {
         const existingUser = await userCollection.findOne({
@@ -65,8 +65,8 @@ const handler = NextAuth({
         if (!existingUser) {
           await userCollection.insertOne({
             email: user.email,
-            name: user.name,
-            image: user.image,
+            name: user.name ?? undefined, // ✅ Ensure it's either string or undefined
+            image: user.image ?? undefined, // ✅ Handle possible null values
             provider: account.provider,
             role: "user", // Default role
           });

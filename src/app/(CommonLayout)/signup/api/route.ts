@@ -1,5 +1,7 @@
 import { connectDB } from "@/lib/connectDB";
 import { NextResponse } from "next/server";
+import { User } from '../../../../models/User';
+import { Collection } from "mongodb";
 
 
 export const POST = async (request: Request): Promise<Response> => {
@@ -16,7 +18,7 @@ export const POST = async (request: Request): Promise<Response> => {
     const db = await connectDB();
     console.log("Connected to database");
 
-    const userCollection = db.collection("users");
+    const userCollection: Collection<User> = db.collection("users");
 
     // Check if user already exists
     const exist = await userCollection.findOne({ email: newUser.email });

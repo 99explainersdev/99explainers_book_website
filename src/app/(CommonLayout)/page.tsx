@@ -1,11 +1,9 @@
-import Link from 'next/link';
+import HomeHero from "../components/HomePage/HomeHero";
 
 export default function Home() {
   return (
     <>
-      <h1 className="bg-red-200">
-        Goto <Link href="/testData">/testData</Link>
-      </h1>
+      <HomeHero />
     </>
   );
 }
