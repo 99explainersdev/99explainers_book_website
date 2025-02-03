@@ -4,7 +4,7 @@ import Image from "next/image";
 
 function HomeHero() {
   const { data: session } = useSession();
-  console.log("User session:", session); // For debugging, you can remove this in production
+  // console.log("User session:", session); 
 
   return (
     <section className="bg-red-600 text-white h-screen flex flex-col justify-center items-center text-center px-4">

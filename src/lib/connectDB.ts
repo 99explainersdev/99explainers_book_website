@@ -1,7 +1,7 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
-let db;
+import { MongoClient, ServerApiVersion, Db } from "mongodb";
+let db: Db | undefined;
 
-export const connectDB = async () => {
+export const connectDB = async (): Promise<Db | undefined> => {
   if (db) return db;
   try {
     const uri = process.env.MONGODB_URI; // Use the server-side environment variable

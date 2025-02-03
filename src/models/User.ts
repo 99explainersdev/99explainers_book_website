@@ -5,7 +5,7 @@ export type User = {
   password?: string;
   name?: string;
   image?: string;
-  role: string; // Add the `role` property
+  role?: string; 
   provider?: string;
 };
 

@@ -1,13 +1,12 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export const middleware = async (request) => {
+export const middleware = async (request: NextRequest) => {
   // Get the token using next-auth's getToken function
   const token = await getToken({
     req: request,
     secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
   });
-
 
   // Redirect to sign-in if token is not present
   if (!token) {

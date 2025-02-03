@@ -1,30 +1,35 @@
-import NextAuth from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-import { connectDB } from "@/lib/connectDB";
-import { User } from "../../../../models/User";
-import { Collection } from "mongodb";
+import NextAuth from "next-auth"; //NextAuth: The core library for handling authentication in Next.js.
+import CredentialsProvider from "next-auth/providers/credentials"; //CredentialsProvider: A provider for handling email/password-based authentication.
+import GoogleProvider from "next-auth/providers/google"; //GoogleProvider: A provider for handling Google OAuth-based authentication.
+import { connectDB } from "@/lib/connectDB"; //connectDB: A utility function to connect to the MongoDB database.
+import { User } from "../../../../models/User"; //User: A TypeScript interface or type representing the user model.
+import { Collection } from "mongodb"; //Collection: A type from MongoDB representing a collection in the database.
+
+
 
 const handler = NextAuth({
-  secret: process.env.NEXT_PUBLIC_AUTH_SECRET,
+  secret: process.env.NEXT_PUBLIC_AUTH_SECRET, //secret: A secret key used to encrypt session data. It is fetched from the environment variables.
 
   session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    strategy: "jwt", //strategy: "jwt": Uses JSON Web Tokens (JWT) for session management.
+    maxAge: 30 * 24 * 60 * 60, // maxAge: Sets the session's maximum age to 30 days (in seconds).
   },
 
   providers: [
     CredentialsProvider({
-      credentials: {
+      credentials: { // credentials: Defines the fields required for authentication (email and password).
         email: {},
         password: {},
       },
-      async authorize(credentials) {
+      async authorize(credentials) { //authorize: A function that validates the credentials and returns the user object if valid.
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Invalid credentials");
         }
 
         const db = await connectDB();
+        if (!db) {
+          throw new Error("Database connection failed");
+        }
         const userCollection: Collection<User> = db.collection("users"); // Correct type definition
         const user = await userCollection.findOne({ email: credentials.email });
 
@@ -49,12 +54,15 @@ const handler = NextAuth({
   ],
 
   pages: {
-    signIn: "/login",
+    signIn: "/login", //signIn: Redirects users to the /login page for authentication.
   },
 
   callbacks: {
     async signIn({ user, account }) {
       const db = await connectDB();
+      if (!db) {
+        throw new Error("Database connection failed");
+      }
       const userCollection: Collection<User> = db.collection("users"); // Use the User type here
 
       if (account?.provider === "google" && user.email) {
@@ -77,32 +85,36 @@ const handler = NextAuth({
 
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role || "user"; // ✅ Ensure role is stored
+        token.role = (user as User).role || "user"; 
       } else {
         const db = await connectDB();
-        const existingUser = await db
-          .collection<User>("users") // Use the User type here
-          .findOne({ email: token.email });
+        if (!db) {
+          throw new Error("Database connection failed");
+        }
+        const existingUser = await db.collection<User>("users").findOne({ email: token.email });
 
         if (existingUser) {
-          token.role = existingUser.role; // ✅ Fetch role from DB
+          token.role = existingUser.role; 
         }
       }
       return token;
     },
 
     async session({ session, token }) {
-      session.user.role = token.role; // ✅ Ensure role is in session
+      if (session.user) {
+        session.user.role = token.role; 
+        console.log("The session is", session);
+        console.log("The token is", token);
+  
+      }
       return session;
     },
 
-    async redirect({ url, baseUrl, token }) {
-      if (token?.role === "admin") {
-        return "/admin-dashboard";
-      }
+    async redirect({ url, baseUrl }) {
       return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
 });
 
 export { handler as GET, handler as POST };
+

@@ -18,6 +18,9 @@ export const POST = async (request: Request): Promise<Response> => {
     const db = await connectDB();
     console.log("Connected to database");
 
+    if (!db) {
+      return NextResponse.json({ message: "Database connection failed" }, { status: 500 });
+    }
     const userCollection: Collection<User> = db.collection("users");
 
     // Check if user already exists
