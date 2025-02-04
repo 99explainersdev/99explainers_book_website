@@ -54,7 +54,7 @@ const handler = NextAuth({
   ],
 
   pages: {
-    signIn: "/login", //signIn: Redirects users to the /login page for authentication.
+    signIn: "/signup", //signIn: Redirects users to the /login page for authentication.
   },
 
   callbacks: {

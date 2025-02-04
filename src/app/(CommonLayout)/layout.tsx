@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Navbar from "../components/Shared/Navbar";
 
 export const metadata: Metadata = {
   title: "99 Publication",
@@ -10,5 +11,10 @@ export default function CommonLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div>{children}</div>;
+  return (
+    <>
+      <Navbar />
+      {children}
+    </>
+  );
 }

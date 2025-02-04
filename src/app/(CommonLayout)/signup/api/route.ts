@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { User } from '../../../../models/User';
 import { Collection } from "mongodb";
 
-
 export const POST = async (request: Request): Promise<Response> => {
   try {
     const newUser = await request.json();

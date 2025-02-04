@@ -6,7 +6,6 @@ import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
-
 const SignUpPage = () => {
   const searchParams = useSearchParams();
   const path = searchParams.get("redirect");

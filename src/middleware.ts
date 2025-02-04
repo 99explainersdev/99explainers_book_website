@@ -10,7 +10,7 @@ export const middleware = async (request: NextRequest) => {
 
   // Redirect to sign-in if token is not present
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/signup", request.url));
   }
 
   // Handle admin dashboard access
