@@ -7,7 +7,7 @@ export const getAllBooks = async () => {
     `${process.env.NEXT_PUBLIC_BASE_URL}/books/api/v1/get-all`
   );
   const response = await fetch(url.toString());
-  const allBooks = await response.json(); // Automatically parses the JSON body
+  const allBooks = await response.json(); // Automatically parses the JSON body as api route returns JSON stringify data so we must make it json();
 
   return allBooks;
 };
@@ -15,7 +15,7 @@ export const getAllBooks = async () => {
 // Get Single Book Route
 
 export const getSpecificBook = async (id: string) => {
-  console.log("This is from getReq", id);
+  // console.log("This is from getReq", id);
   const url = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/books/api/v1/${id}`);
   const response = await fetch(url.toString());
   const book = await response.json();
