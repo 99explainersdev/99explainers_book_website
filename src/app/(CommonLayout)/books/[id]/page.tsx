@@ -1,24 +1,71 @@
-import { getSpecificBook, getAllBooks } from "@/services/getReq";
-import React from "react";
+'use client'
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Book } from "@/types";
+import { useDispatch } from "react-redux";
+import { add } from "../../../redux/cartSlice";
 
-const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
-  const { id } = await params;
-  const details = await getSpecificBook(id);
+const SingleBookDetailPage = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = React.use(params);
+  const [details, setDetails] = useState<Book | null>(null);
+  const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
-  // Filter out the current book and limit related books
-  const res = await getAllBooks();
-  const books = res.books;
-  const relatedBooks = books
-    .filter((book: Book) => book._id !== id)
-    .slice(0, 6);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        // Fetch specific book details
+        const bookResponse = await fetch(`http://localhost:3000/books/api/v1/${id}`);
+        if (!bookResponse.ok) {
+          throw new Error('Book not found');
+        }
+        const bookData = await bookResponse.json();
+        setDetails(bookData);
 
-  if (!details) {
+        // Fetch all books for related books section
+        const allBooksResponse = await fetch('http://localhost:3000/books/api/v1/get-all');
+        if (!allBooksResponse.ok) {
+          throw new Error('Failed to fetch related books');
+        }
+        const allBooksData = await allBooksResponse.json();
+        
+        // Filter out current book and limit to 6 related books
+        const filtered = allBooksData.books
+          .filter((book: Book) => book._id !== id)
+          .slice(0, 6);
+        setRelatedBooks(filtered);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]); // Updated dependency array to use unwrapped id
+
+
+  const handleAdd = (book: Book) => {
+    dispatch(add(book));
+  };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 mt-[120px] text-center">
+        <p className="text-lg">Loading...</p>
+      </div>
+    );
+  }
+
+  if (error || !details) {
     return (
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 mt-[120px]">
-        <p className="text-red-500 text-lg">Book not found.</p>
+        <p className="text-red-500 text-lg">{error || 'Book not found.'}</p>
       </div>
     );
   }
@@ -43,6 +90,7 @@ const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
         <span className="mx-3 text-gray-400">/</span>
         <span className="text-gray-900 font-semibold">{details.title}</span>
       </nav>
+
       {/* Product Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mt-8">
         {/* Left Column - Images */}
@@ -79,9 +127,9 @@ const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
             </p>
           </div>
 
-          {/* Buttons Section with increased spacing */}
-          <div className="flex flex-col space-y-4 mt-auto pt-16 ">
-            <button className="w-full bg-primary_blue text-white text-lg px-8 py-4 rounded-md hover:bg-blue-700 transition-all duration-200 transform hover:translate-y-[-2px] hover:shadow-lg">
+          {/* Buttons Section */}
+          <div className="flex flex-col space-y-4 mt-auto pt-16">
+            <button  onClick={()=>handleAdd(details)} className="w-full bg-primary_blue text-white text-lg px-8 py-4 rounded-md hover:bg-blue-700 transition-all duration-200 transform hover:translate-y-[-2px] hover:shadow-lg">
               Add To Cart
             </button>
             <button className="w-full bg-primary_red text-white text-lg px-8 py-4 rounded-md hover:bg-red-600 transition-all duration-200 transform hover:translate-y-[-2px] hover:shadow-lg">
@@ -90,18 +138,15 @@ const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
           </div>
         </div>
       </div>
+
       {/* Product Details Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20  text-lg">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 text-lg">
         <div>
           <h3 className="font-bold mb-3 text-2xl text-primary_red">Author</h3>
           <p className="text-gray-700">{details.author}</p>
-          <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red ">
-            ISBN
-          </h3>
+          <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">ISBN</h3>
           <p className="text-gray-700">{details.isbn}</p>
-          <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
-            Size
-          </h3>
+          <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">Size</h3>
           <p className="text-gray-700">{details.size}</p>
         </div>
         <div>
@@ -125,6 +170,7 @@ const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
           <p className="text-gray-700">{details.format}</p>
         </div>
       </div>
+
       {/* Related Books Section */}
       {relatedBooks.length > 0 && (
         <div className="mt-24 mb-16">
@@ -156,8 +202,8 @@ const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
                         <Link href={`/books/${book._id}`} className="block">
                           <button
                             className="w-full bg-white text-primary_red border-2 border-primary_red px-6 py-3 rounded-lg 
-                      hover:bg-primary_red hover:text-white transition-all duration-300 
-                      font-medium shadow-sm hover:shadow-md active:scale-95"
+                            hover:bg-primary_red hover:text-white transition-all duration-300 
+                            font-medium shadow-sm hover:shadow-md active:scale-95"
                           >
                             View Details
                           </button>
@@ -170,7 +216,7 @@ const SingleBookDetailPage = async ({ params }: { params: { id: string } }) => {
             </div>
           </div>
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };

@@ -4,6 +4,8 @@ import { ObjectId } from "mongodb"; // Import ObjectId
 
 export const GET = async (req: Request, context: { params: { id: string } }) => {
   try {
+
+    // console.log("Context", context)
     const { id } = await context.params;
     // console.log("This is from params id business", id);
 

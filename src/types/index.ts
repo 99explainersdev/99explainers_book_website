@@ -20,4 +20,5 @@ type Price = {
     image_url: string;
     ages_category: string;
     books_category: string;
+    quantity?: number;
   };

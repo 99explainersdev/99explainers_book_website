@@ -4,8 +4,13 @@ import { useState, FormEventHandler } from 'react';
 import { signOut, useSession } from 'next-auth/react';
 import { AiOutlineSearch, AiOutlineShoppingCart, AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import Image from 'next/image';
+import { RootState } from "../../redux/store"; // Replace with the actual path to your store's RootState type
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+
+    const item = useSelector((state: RootState) => state.cart);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [menuOpen, setMenuOpen] = useState(false);
     const { data: session, status } = useSession();
@@ -70,7 +75,7 @@ const Navbar = () => {
                     )}
                     <Link href="/cart" className="relative text-gray-700 hover:text-red-600">
                         <AiOutlineShoppingCart size={28} />
-                        <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">0</span>
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">{item.length}</span>
                     </Link>
                 </div>
 
