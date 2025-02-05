@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb"; // Import ObjectId
 export const GET = async (req: Request, context: { params: { id: string } }) => {
   try {
     const { id } = await context.params;
-    console.log("This is from params id business", id);
+    // console.log("This is from params id business", id);
 
     if (!id || !ObjectId.isValid(id)) {
       return NextResponse.json({ message: "Invalid book ID" }, { status: 400 });
