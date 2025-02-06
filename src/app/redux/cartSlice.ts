@@ -6,11 +6,14 @@ interface CartItem extends Book {
 }
 
 const cartSlice = createSlice({
+  //1. This is the name of the slice 
   name: "Cart",
+  // 2. The initial state of the slice
   initialState: [] as CartItem[],
+  // 3. The reducers are functions that modify the state
   reducers: {
     add(state, action: PayloadAction<Book>) {
-      const existingItem = state.find((item) => item._id === action.payload._id);
+      const existingItem = state.find((item) => item._id === action.payload._id); // speicific kon id click korse eita ber korteis
       if (existingItem) {
         existingItem.quantity += 1; // Increase quantity if item exists
       } else {

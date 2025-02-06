@@ -173,6 +173,7 @@ const SingleBookDetailPage = ({
           </h3>
           <p className="text-gray-700">{details.size}</p>
         </div>
+
         <div>
           <h3 className="font-bold text-2xl mb-3 text-primary_red">
             Illustrations
@@ -182,9 +183,14 @@ const SingleBookDetailPage = ({
             Pages
           </h3>
           <p className="text-gray-700">{details.pages}</p>
+          <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
+            Age Category
+          </h3>
+          <p className="text-gray-700">{details.ages_category}</p>
         </div>
+
         <div>
-          <h3 className="font-semibold mb-3 text-primary_red">
+          <h3 className="font-bold text-2xl mb-3 text-primary_red">
             Publication Date
           </h3>
           <p className="text-gray-700">{details.publication_date}</p>
@@ -192,6 +198,10 @@ const SingleBookDetailPage = ({
             Format
           </h3>
           <p className="text-gray-700">{details.format}</p>
+          <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
+            Book Category
+          </h3>
+          <p className="text-gray-700">{details.books_category}</p>
         </div>
       </div>
 
