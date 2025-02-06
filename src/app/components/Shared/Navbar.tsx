@@ -13,11 +13,11 @@ import { RootState } from "../../redux/store"; // Replace with the actual path t
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-  const cartItems = useSelector((state: RootState) => state.cart);
-  const totalCartItems = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0
-  );
+    const cartItems = useSelector((state: RootState) => state.cart);
+    const totalCartItems = cartItems.length > 0 
+      ? cartItems.reduce((total, item) => total + item.quantity, 0) 
+      : 0; // Ensures the cart count is 0 when empty
+    
 
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -40,7 +40,7 @@ const Navbar = () => {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
-            src="/Logo-01.png"
+            src="/assets/Logo-01.png"
             alt="BookStore Logo"
             width={120}
             height={40}
@@ -100,11 +100,11 @@ const Navbar = () => {
             className="relative text-gray-700 hover:text-red-600"
           >
             <AiOutlineShoppingCart size={28} />
-            {totalCartItems > 0 && (
+            {
               <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
                 {totalCartItems}
               </span>
-            )}
+            }
           </Link>
         </div>
 
@@ -166,9 +166,11 @@ const Navbar = () => {
             className="relative text-gray-700 hover:text-red-600"
           >
             <AiOutlineShoppingCart size={28} />
-            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
-              0
-            </span>
+            {
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
+                {totalCartItems}
+              </span>
+            }
           </Link>
         </div>
       )}
@@ -177,3 +179,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+ 

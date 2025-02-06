@@ -23,7 +23,7 @@ export default function NotFound() {
       </Link>
       <div className="mt-10">
         <Image
-          src="/404.jpg"
+          src="/assets/404.jpg"
           alt="Confused 404"
           width={320}
           height={320}

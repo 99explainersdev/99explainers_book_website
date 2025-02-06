@@ -7,7 +7,7 @@ const HomeHero: React.FC = () => {
     <div className="relative w-full h-screen overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="/images/slide1.png"
+          src="/assets/slide1.png"
           alt="Slide 1"
           fill 
         

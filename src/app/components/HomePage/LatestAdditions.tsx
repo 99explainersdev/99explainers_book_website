@@ -37,10 +37,10 @@ const LatestAdditions = async () => {
               </h3>
               <p className="text-gray-700 mb-4">
                 <span className="line-through text-white">
-                  Tk {book.price.original}
+                ৳ {book.price.original}
                 </span>{" "}
                 <span className="font-bold text-white">
-                  Tk {book.price.discounted}
+                ৳ {book.price.discounted}
                 </span>
               </p>
               <Link href={`/books/${book._id}`}>
