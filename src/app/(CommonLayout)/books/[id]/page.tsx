@@ -222,10 +222,8 @@ const SingleBookDetailPage = ({
                         <Image
                           src={book.image_url}
                           alt={book.title}
-                          // layout="fill"
                           fill
-                          objectFit="cover"
-                          className="transform hover:scale-105 transition-transform duration-500"
+                          className="object-cover transform hover:scale-105 transition-transform duration-500"
                         />
                       </div>
 

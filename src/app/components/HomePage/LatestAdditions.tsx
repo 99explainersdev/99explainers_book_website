@@ -35,9 +35,8 @@ const LatestAdditions = async () => {
                   src={book.image_url}
                   alt={book.title}
                   // layout="fill"
-                  fill
-                  objectFit="cover"
-                  className="rounded-md"
+                 fill
+                          className="object-cover transform hover:scale-105 transition-transform duration-500"
                 />
               </div>
 

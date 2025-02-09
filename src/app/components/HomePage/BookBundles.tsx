@@ -62,8 +62,9 @@ const BookBundles: React.FC = () => {
                                     <Image
                                         src={bundle.imageUrl}
                                         alt={bundle.title}
-                                        layout="fill"
-                                        objectFit="contain"
+                                        // layout="fill"
+                                        // objectFit="contain"
+                                        fill
                                         className="rounded-md"
                                     />
                                 </div>
