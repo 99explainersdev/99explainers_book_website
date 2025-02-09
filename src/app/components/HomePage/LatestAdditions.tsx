@@ -1,3 +1,5 @@
+
+
 import React from "react";
 import Image from "next/image";
 import { getAllBooks } from "@/services/getReq";
@@ -6,45 +8,51 @@ import Link from "next/link";
 
 const LatestAdditions = async () => {
   const res = await getAllBooks();
-  const books = res.books;
+  const books = res.books.slice(0, 3); // Show only 3 books
 
   return (
-    <div className="w-full px-4 py-12 bg-[#FFEED6] flex flex-col items-center justify-center relative">
-      <div className="absolute bottom-0 left-0 w-full h-1/2 bg-[#DE3D3A] rounded-b-3xl z-0"></div>
+    <div className="w-full px-4 sm:px-6 md:px-12 lg:px-20 py-12 bg-[#FFEED6] flex flex-col items-center relative  mb-[30px]">
+      {/* Background Shape (Visible only on lg and larger screens) */}
+      <div className="absolute bottom-0 w-full h-1/2 bg-[#DE3D3A] rounded-t-3xl z-0 max-w-[90%] md:max-w-[85%] lg:max-w-[80%] xl:max-w-[75%] hidden lg:block" />
 
-      <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-center text-red-600">
-        Our Latest Additions
-      </h2>
+      {/* Content Container with proper z-index */}
+      <div className="flex flex-col items-center w-full relative z-10">
+        {/* Title */}
+        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-8 text-center text-red-600">
+            OUR LATEST ADDITIONS
+        </h2>
 
-      <div className="flex flex-col items-center w-full max-w-6xl z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full mb-8">
-          {books.slice(0, 3).map((book: Book) => (
+        {/* Books Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full max-w-7xl mb-8">
+          {books.map((book: Book) => (
             <div
               key={book._id}
-              className="bg-[#DE3D3A] rounded-lg p-4 flex flex-col items-center shadow-lg hover:shadow-xl transition-shadow duration-300"
+              className="relative bg-[#DE3D3A] lg:bg-[#DE3D3A] rounded-lg p-4 sm:p-6 flex flex-col items-center text-center shadow-md hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="relative w-[250px] h-[350px] mb-4">
+              {/* Book Image */}
+              <div className="relative w-full max-w-[250px] sm:max-w-[280px] md:max-w-[320px] lg:max-w-[350px] h-[320px] sm:h-[350px] md:h-[400px] lg:h-[450px] mb-4">
                 <Image
                   src={book.image_url}
                   alt={book.title}
-                  height={350}
-                  width={250}
-                  className="rounded-md object-cover"
+                  // layout="fill"
+                  fill
+                  objectFit="cover"
+                  className="rounded-md"
                 />
               </div>
-              <h3 className="text-lg text-white font-semibold mb-2 text-center">
-                {book.title}
-              </h3>
-              <p className="text-gray-700 mb-4">
-                <span className="line-through text-white">
-                ৳ {book.price.original}
-                </span>{" "}
-                <span className="font-bold text-white">
-                ৳ {book.price.discounted}
-                </span>
+
+              {/* Book Title */}
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 text-white">{book.title}</h3>
+
+              {/* Price */}
+              <p className="text-gray-200 mb-4 text-sm sm:text-base">
+                <span className="line-through text-gray-400">৳ {book.price.original}</span>{" "}
+                <span className="font-bold">৳ {book.price.discounted}</span>
               </p>
+
+              {/* View Details Button */}
               <Link href={`/books/${book._id}`}>
-                <button className="bg-white text-[#DE3D3A] px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors duration-300">
+                <button className="bg-[#FFEED6] hover:bg-[#F7B86D] text-black font-semibold py-2 sm:py-3 px-5 sm:px-6 md:px-8 rounded-full transition duration-300">
                   View Details
                 </button>
               </Link>
@@ -52,11 +60,14 @@ const LatestAdditions = async () => {
           ))}
         </div>
 
-        <Link href="/books">
-          <button className="bg-white text-[#DE3D3A] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-300 shadow-md hover:shadow-lg">
-            Show All
-          </button>
-        </Link>
+        {/* Show All Button Container */}
+        <div className="w-full flex justify-center mt-8">
+          <Link href="/books">
+            <button className="bg-white hover:bg-[#F7B86D] text-black font-semibold py-3 px-6 sm:px-8 md:px-12 rounded-full transition duration-300 shadow-md hover:shadow-lg">
+              Show All
+            </button>
+          </Link>
+        </div>
       </div>
     </div>
   );

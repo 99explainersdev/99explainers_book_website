@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Navbar from "../components/Shared/Navbar";
+import Footer from "../components/Shared/Footer";
 
 export const metadata: Metadata = {
   title: "99 Publication",
@@ -15,6 +16,7 @@ export default function CommonLayout({
     <>
       <Navbar />
       {children}
+     <Footer/>
     </>
   );
 }

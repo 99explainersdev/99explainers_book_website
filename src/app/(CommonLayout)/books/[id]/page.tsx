@@ -117,7 +117,7 @@ const SingleBookDetailPage = ({
               src={details.image_url}
               alt={`${details.title} book cover`}
               fill
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: "contain" }} // Correct usage
               className="transition-transform duration-300 hover:scale-105"
             />
           </div>
@@ -222,7 +222,8 @@ const SingleBookDetailPage = ({
                         <Image
                           src={book.image_url}
                           alt={book.title}
-                          layout="fill"
+                          // layout="fill"
+                          fill
                           objectFit="cover"
                           className="transform hover:scale-105 transition-transform duration-500"
                         />
