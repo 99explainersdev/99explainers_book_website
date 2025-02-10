@@ -48,7 +48,7 @@ const BookBundles: React.FC = () => {
   return (
     <div className="relative w-full flex flex-col items-center">
       {/* Overlapping Wrapper */}
-      <div className="absolute -top-32 w-full flex justify-center z-10">
+      <div className="absolute md:-top-32 w-full flex justify-center z-10">
         <div className="relative w-full max-w-7xl px-4">
           <h2 className="text-3xl md:text-4xl py-2 lg:text-5xl font-bold text-center text-[#F5D368]">
             BOOK BUNDLES

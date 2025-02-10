@@ -6,14 +6,19 @@ import { RootState } from "../../redux/store";
 import Image from "next/image";
 import { Book } from "@/types";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 interface CartItem extends Book {
   quantity: number;
 }
 
 const Cartpage: React.FC = () => {
+  const router = useRouter(); 
+  console.log(router)
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart);
+
+
 
   // Calculate total price using useMemo to optimize performance
   const totalPrice = useMemo(() => {
@@ -34,6 +39,9 @@ const Cartpage: React.FC = () => {
     dispatch(remove(id)); // Remove item completely
   };
 
+  const handleCheckout = () => {
+    router.push('/checkout'); // Use router.push to navigate
+  };
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 pt-[150px]">
       
@@ -144,10 +152,7 @@ const Cartpage: React.FC = () => {
               </div>
               <button 
                 className="w-full mt-6 bg-primary_blue text-white text-xl font-semibold px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-                onClick={() => {
-                  // Add checkout logic here
-                  console.log('Proceeding to checkout...');
-                }}
+                onClick={handleCheckout}
               >
                 Proceed to Checkout
               </button>
