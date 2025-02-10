@@ -16,7 +16,7 @@ const HomeHero: React.FC = () => {
       </div>
       <div className="absolute top-1/2 left-1/8 transform -translate-y-1/2 text-[#DA1725] max-w-lg z-10 pl-[111px]">
         <h2 className="text-4xl md:text-7xl font-bold leading-tight mb-4">
-          LET&apos;S READ <span className="text-white">SOMETHING</span> DIFFERENT
+          LET&apos;S READ <span className="text-white">SOMETHING</span> DIFFERENT!
         </h2>
       </div>
     </div>
