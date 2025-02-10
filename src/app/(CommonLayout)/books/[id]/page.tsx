@@ -1,14 +1,16 @@
+// SingleBookDetailPage.tsx
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Book } from "@/types";
 import { useDispatch } from "react-redux";
-import { add } from "../../../redux/cartSlice";
+import { add } from "../../../redux/cartSlice"; // Import add
 import Swal from "sweetalert2";
 import LoadingSpinner from "@/app/components/Shared/LoadingSpinner";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { useRouter} from 'next/navigation';
 
 const SingleBookDetailPage = ({
   params,
@@ -23,8 +25,18 @@ const SingleBookDetailPage = ({
   const dispatch = useDispatch();
   const sliderRef = useRef<HTMLDivElement>(null);
   const [startIndex, setStartIndex] = useState(0);
+  const visibleBooks = 3;
+  const router = useRouter();
 
-  const visibleBooks = 3; // Adjust this number as needed
+  const handleCheckout = useCallback(() => {
+    if (details) {
+      // Add the current book to the cart FIRST
+      dispatch(add(details));
+      router.push('/checkout');
+    } else {
+      console.warn("Book details not loaded yet.");
+    }
+  }, [details, dispatch, router]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -198,7 +210,10 @@ const SingleBookDetailPage = ({
             >
               Add To Cart
             </button>
-            <button className="w-full bg-primary_red text-white text-lg px-8 py-4 rounded-md hover:bg-red-600 transition-all duration-200 transform hover:translate-y-[-2px] hover:shadow-lg">
+            <button
+              onClick={handleCheckout}
+              className="w-full bg-primary_red text-white text-lg px-8 py-4 rounded-md hover:bg-red-600 transition-all duration-200 transform hover:translate-y-[-2px] hover:shadow-lg"
+            >
               Buy Now
             </button>
           </div>
