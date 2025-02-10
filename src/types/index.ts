@@ -1,10 +1,12 @@
+import { ObjectId } from "mongodb";
+
 type Price = {
     original: number;
     discounted: number;
   };
   
   export type Book = {
-    _id: string;
+    _id: string | ObjectId;  // Allow both string and ObjectId
     title: string;
     author: string;
     illustrator: string;
@@ -22,3 +24,4 @@ type Price = {
     books_category: string;
     quantity?: number;
   };
+  

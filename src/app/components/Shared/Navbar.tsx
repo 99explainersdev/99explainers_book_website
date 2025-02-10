@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useState, FormEventHandler } from "react";
-import { signOut, useSession } from "next-auth/react";
 import {
   AiOutlineSearch,
   AiOutlineShoppingCart,
@@ -9,29 +8,25 @@ import {
   AiOutlineClose,
 } from "react-icons/ai";
 import Image from "next/image";
-import { RootState } from "../../redux/store"; // Replace with the actual path to your store's RootState type
+import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 
 const Navbar = () => {
-    const cartItems = useSelector((state: RootState) => state.cart);
-    const totalCartItems = cartItems.length > 0 
-      ? cartItems.reduce((total, item) => total + item.quantity, 0) 
-      : 0; // Ensures the cart count is 0 when empty
-    
+  const cartItems = useSelector((state: RootState) => state.cart);
+  const totalCartItems = cartItems.length > 0 
+    ? cartItems.reduce((total, item) => total + item.quantity, 0) 
+    : 0;
 
   const [searchQuery, setSearchQuery] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const { data: session, status } = useSession();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
   const handleSearchSubmit: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault(); // Prevents the default form submission behaviour.
+    e.preventDefault();
     console.log("Searching For:", searchQuery);
-    // In a real app, you'd trigger the actual search logic here, e.g., by
-    // navigating to a search results page.
   };
 
   return (
@@ -70,41 +65,11 @@ const Navbar = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          {status === "loading" && (
-            <span className="loading loading-ring loading-lg"></span>
-          )}
-          {status === "unauthenticated" && (
-            <div className="flex gap-3">
-              <Link href="/signup" className="btn btn-primary px-8">
-                Sign In
-              </Link>
-            </div>
-          )}
-          {status === "authenticated" && (
-            <div className="flex items-center gap-x-3">
-              <Image
-                className="rounded-full"
-                src={session?.user?.image || "/default-avatar.png"}
-                width={40}
-                height={40}
-                alt="User Avatar"
-              />
-              <p className="font-bold">{session?.user?.name}</p>
-              <button onClick={() => signOut()} className="text-red-500">
-                Logout
-              </button>
-            </div>
-          )}
-          <Link
-            href="/cart"
-            className="relative text-gray-700 hover:text-red-600"
-          >
+          <Link href="/cart" className="relative text-gray-700 hover:text-red-600">
             <AiOutlineShoppingCart size={28} />
-            {
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
-                {totalCartItems}
-              </span>
-            }
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
+              {totalCartItems}
+            </span>
           </Link>
         </div>
 
@@ -113,11 +78,7 @@ const Navbar = () => {
           className="md:hidden text-gray-700 hover:text-red-600"
           onClick={() => setMenuOpen(!menuOpen)}
         >
-          {menuOpen ? (
-            <AiOutlineClose size={28} />
-          ) : (
-            <AiOutlineMenu size={28} />
-          )}
+          {menuOpen ? <AiOutlineClose size={28} /> : <AiOutlineMenu size={28} />}
         </button>
       </div>
 
@@ -139,38 +100,11 @@ const Navbar = () => {
               <AiOutlineSearch size={20} />
             </button>
           </form>
-          {status === "unauthenticated" && (
-            <div className="flex flex-col gap-y-3 mt-4">
-              <Link href="/signup" className="btn btn-primary">
-                Sign In
-              </Link>
-            </div>
-          )}
-          {status === "authenticated" && (
-            <div className="flex flex-col gap-y-3 mt-4 items-center">
-              <Image
-                className="rounded-full"
-                src={session?.user?.image || "/default-avatar.png"}
-                width={40}
-                height={40}
-                alt="User Avatar"
-              />
-              <p className="font-bold">{session?.user?.name}</p>
-              <button onClick={() => signOut()} className="text-red-500">
-                Logout
-              </button>
-            </div>
-          )}
-          <Link
-            href="/cart"
-            className="relative text-gray-700 hover:text-red-600"
-          >
+          <Link href="/cart" className="relative text-gray-700 hover:text-red-600">
             <AiOutlineShoppingCart size={28} />
-            {
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
-                {totalCartItems}
-              </span>
-            }
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
+              {totalCartItems}
+            </span>
           </Link>
         </div>
       )}
@@ -179,4 +113,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
- 
