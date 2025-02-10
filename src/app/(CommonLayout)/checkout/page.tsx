@@ -128,7 +128,7 @@ const CheckoutPage = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Full Name */}
                   <div>
-                    <label htmlFor="name" className="block text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label htmlFor="name" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
                       <FaUser className="text-primary_red" /> Full Name
                     </label>
                     <input
@@ -144,7 +144,7 @@ const CheckoutPage = () => {
 
                   {/* Email Address */}
                   <div>
-                    <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label htmlFor="email" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
                       <FaEnvelope className="text-primary_red" /> Email Address
                     </label>
                     <input
@@ -160,7 +160,7 @@ const CheckoutPage = () => {
 
                   {/* Phone Number */}
                   <div>
-                    <label htmlFor="phone" className="block text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label htmlFor="phone" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
                       <FaPhone className="text-primary_red" /> Phone Number
                     </label>
                     <input
@@ -176,7 +176,7 @@ const CheckoutPage = () => {
 
                   {/* Shipping Address */}
                   <div>
-                    <label htmlFor="address" className="block text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label htmlFor="address" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
                       <FaMapMarkerAlt className="text-primary_red" /> Shipping Address
                     </label>
                     <input
@@ -220,7 +220,7 @@ const CheckoutPage = () => {
 
                   {/* Delivery Option */}
                   <div>
-                    <label htmlFor="deliveryOption" className="block text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"><FaTruck className="text-primary_red"/>Delivery Option</label>
+                    <label htmlFor="deliveryOption" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"><FaTruck className="text-primary_red"/>Delivery Option</label>
                     <select
                       id="deliveryOption"
                       className="shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"

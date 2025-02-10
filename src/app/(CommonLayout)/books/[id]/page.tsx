@@ -22,12 +22,12 @@ const SingleBookDetailPage = ({
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const dispatch = useDispatch();
   const sliderRef = useRef<HTMLDivElement>(null);
   const [startIndex, setStartIndex] = useState(0);
   const visibleBooks = 3;
   const router = useRouter();
-
+  const dispatch = useDispatch();
+  
   const handleCheckout = useCallback(() => {
     if (details) {
       // Add the current book to the cart FIRST
@@ -44,7 +44,7 @@ const SingleBookDetailPage = ({
 
       if (!baseURL) {
         setError(
-          "Missing BASE URL. Check your .env.local file and Next.js configuration."
+          "Missing BASE URL."
         );
         setIsLoading(false);
         return;

@@ -14,10 +14,11 @@ interface CartItem extends Book {
 
 const Cartpage: React.FC = () => {
   const router = useRouter(); 
-  console.log(router)
+  
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart);
-
+//  This line tells the component to subscribe to changes in the state.cart value. Whenever the cart in the Redux store changes,
+//  the component will re-render with the new cartItems.
 
 
   // Calculate total price using useMemo to optimize performance
