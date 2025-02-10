@@ -10,10 +10,9 @@ export const GET = async () => {
     }
     const booksCollection = db.collection("books");
 
-    // Fetch all books from the database
+
     const allBooks = await booksCollection.find().toArray();
-    // console.log("This is from get-all route", allBooks);
-    // console.log(JSON.stringify({ books: allBooks }))
+   
 
     return new NextResponse(JSON.stringify({ books: allBooks }), { status: 200 });
   } catch {

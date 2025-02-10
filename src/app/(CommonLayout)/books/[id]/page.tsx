@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Book } from "@/types";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { add } from "../../../redux/cartSlice";
 import Swal from "sweetalert2";
 import LoadingSpinner from "@/app/components/Shared/LoadingSpinner";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const SingleBookDetailPage = ({
   params,
@@ -20,27 +21,43 @@ const SingleBookDetailPage = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [startIndex, setStartIndex] = useState(0);
+
+  const visibleBooks = 3; // Adjust this number as needed
 
   useEffect(() => {
     const fetchData = async () => {
+      const baseURL = process.env.NEXT_PUBLIC_BASE_URL;
+
+      if (!baseURL) {
+        setError(
+          "Missing BASE URL. Check your .env.local file and Next.js configuration."
+        );
+        setIsLoading(false);
+        return;
+      }
+
       try {
         setIsLoading(true);
+
         // Fetch specific book details
-        const bookResponse = await fetch(
-          `http://localhost:3000/books/api/v1/${id}`
-        );
+        const bookResponse = await fetch(`${baseURL}/books/api/v1/${id}`);
+
         if (!bookResponse.ok) {
-          throw new Error("Book not found");
+          throw new Error(`Book not found: Status ${bookResponse.status}`);
         }
+
         const bookData = await bookResponse.json();
         setDetails(bookData);
 
         // Fetch all books for related books section
-        const allBooksResponse = await fetch(
-          "http://localhost:3000/books/api/v1/get-all"
-        );
+        const allBooksResponse = await fetch(`${baseURL}/books/api/v1/get-all`);
+
         if (!allBooksResponse.ok) {
-          throw new Error("Failed to fetch related books");
+          throw new Error(
+            `Failed to fetch related books: Status ${allBooksResponse.status}`
+          );
         }
         const allBooksData = await allBooksResponse.json();
 
@@ -57,7 +74,7 @@ const SingleBookDetailPage = ({
     };
 
     fetchData();
-  }, [id]); // Updated dependency array to use unwrapped id
+  }, [id]);
 
   const handleAdd = (book: Book) => {
     dispatch(add(book));
@@ -71,6 +88,33 @@ const SingleBookDetailPage = ({
     });
   };
 
+  const handlePrev = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollTo({
+        left:
+          sliderRef.current.scrollLeft - sliderRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+      setStartIndex(Math.max(0, startIndex - 1));
+    }
+  };
+
+  const handleNext = () => {
+    if (sliderRef.current) {
+      sliderRef.current.scrollTo({
+        left:
+          sliderRef.current.scrollLeft + sliderRef.current.offsetWidth,
+        behavior: "smooth",
+      });
+      setStartIndex(
+        Math.min(relatedBooks.length - visibleBooks, startIndex + 1)
+      );
+    }
+  };
+
+  const hasPrev = startIndex > 0;
+  const hasNext = startIndex < relatedBooks.length - visibleBooks;
+
   if (isLoading) {
     return (
       <>
@@ -82,7 +126,9 @@ const SingleBookDetailPage = ({
   if (error || !details) {
     return (
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 mt-[120px]">
-        <p className="text-red-500 text-lg">{error || "Book not found."}</p>
+        <p className="text-red-500 text-lg">
+          {error || "Book not found."}
+        </p>
       </div>
     );
   }
@@ -117,7 +163,7 @@ const SingleBookDetailPage = ({
               src={details.image_url}
               alt={`${details.title} book cover`}
               fill
-              style={{ objectFit: "contain" }} // Correct usage
+              style={{ objectFit: "contain" }}
               className="transition-transform duration-300 hover:scale-105"
             />
           </div>
@@ -213,40 +259,57 @@ const SingleBookDetailPage = ({
           </h2>
 
           <div className="relative">
-            <div className="relative overflow-x-auto pb-8">
-              <div className="flex space-x-8 px-4">
-                {relatedBooks.map((book: Book) => (
-                  <div key={book._id} className="w-72 flex-shrink-0 group">
-                    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4">
-                      <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden">
-                        <Image
-                          src={book.image_url}
-                          alt={book.title}
-                          fill
-                          className="object-cover transform hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
+            <div
+              className="flex space-x-8 px-4 overflow-hidden"
+              ref={sliderRef}
+            >
+              {relatedBooks.map((book: Book) => (
+                <div key={book._id} className="w-72 flex-shrink-0 group">
+                  <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4">
+                    <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden">
+                      <Image
+                        src={book.image_url}
+                        alt={book.title}
+                        fill
+                        className="object-cover transform hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
 
-                      <div className="space-y-4">
-                        <h3 className="font-semibold text-lg text-gray-800 h-14 text-center line-clamp-2">
-                          {book.title}
-                        </h3>
+                    <div className="space-y-4">
+                      <h3 className="font-semibold text-lg text-gray-800 h-14 text-center line-clamp-2">
+                        {book.title}
+                      </h3>
 
-                        <Link href={`/books/${book._id}`} className="block">
-                          <button
-                            className="w-full bg-white text-primary_red border-2 border-primary_red px-6 py-3 rounded-lg 
-                            hover:bg-primary_red hover:text-white transition-all duration-300 
+                      <Link href={`/books/${book._id}`} className="block">
+                        <button
+                          className="w-full bg-white text-primary_red border-2 border-primary_red px-6 py-3 rounded-lg
+                            hover:bg-primary_red hover:text-white transition-all duration-300
                             font-medium shadow-sm hover:shadow-md active:scale-95"
-                          >
-                            View Details
-                          </button>
-                        </Link>
-                      </div>
+                        >
+                          View Details
+                        </button>
+                      </Link>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
+
+            {/* Navigation Buttons */}
+            <button
+              onClick={handlePrev}
+              disabled={!hasPrev}
+              className="absolute left-[-2rem] top-1/2 transform -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <AiOutlineLeft size={35} />
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={!hasNext}
+              className="absolute right-[-2rem] top-1/2 transform -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <AiOutlineRight size={35} />
+            </button>
           </div>
         </div>
       )}

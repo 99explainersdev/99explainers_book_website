@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+// import { ObjectId } from "mongodb";
 
 type Price = {
     original: number;
@@ -6,7 +6,7 @@ type Price = {
   };
   
   export type Book = {
-    _id: string | ObjectId;  // Allow both string and ObjectId
+    _id: string;  
     title: string;
     author: string;
     illustrator: string;

@@ -13,7 +13,7 @@ export default function Home() {
       <LatestAdditions />
       <ExploreByAge />
       <ExploreBYCategory />
-      <BookBundles />
+      <BookBundles /> 
       <WhyAreWeSpecial />
       {/* <BookDummy /> */}
     </>
