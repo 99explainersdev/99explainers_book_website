@@ -14,6 +14,8 @@ const cartSlice = createSlice({
   // 2. The initial state of the slice
   initialState: [] as CartItem[],
   // 3. The reducers are functions that modify the state
+  // add function how it works : This add function is for cart items if the item exists in the cart already 
+  // then increase quanityt if it doesnt exist add as a new list and quantity will be = 1
   reducers: {
     add(state, action: PayloadAction<Book>) {
       const existingItem = state.find(
@@ -39,9 +41,13 @@ const cartSlice = createSlice({
     //If the item doesn't exist, it creates a new CartItem object by spreading the properties of the action.payload (the Book) and adding a quantity property with a value of 1. Then, pushes the new object to the state array.
     //^^^^^^^^^^^^^^^^ The docs are for above code ^^^^^^^^^^^^^^^^^^^^^^//
 
+    // remove function how it works : it will remove the enire item i click and give only the existing item
     remove(state, action: PayloadAction<string>) {
       return state.filter((item) => item._id !== action.payload);
     },
+
+    // decrease function how it works : This decrease function is for cart items if quanity is greater than 1 then 
+    // decrease the quantity if it is 1 then remove the item from the cart if it is 0 then do nothing
     decrease(state, action: PayloadAction<string>) {
       const existingItem = state.find((item) => item._id === action.payload);
 

@@ -50,7 +50,7 @@ const ExploreBYCategory: React.FC = () => {
   ];
 
   return (
-    <section className="w-full py-8 sm:py-12 md:py-40  bg-[#3A2E92] text-white ">
+    <section className="w-full py-8 sm:py-12 md:pb-52  bg-[#3A2E92] text-white ">
       <div className="container mx-auto px-4 md:px-6 lg:px-8 ">
         {/* Title */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 sm:mb-12 md:mb-16 text-center text-[#F5D368]">

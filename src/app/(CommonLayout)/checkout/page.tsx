@@ -16,6 +16,8 @@ const CheckoutPage = () => {
   const [zip, setZip] = useState("");
   const [deliveryOption, setDeliveryOption] = useState("insideDhaka"); // Default value
 
+
+  // K
   const cartItems = useSelector((state: RootState) => state.cart);
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total: number, item: { price: { discounted: number }, quantity: number }) => {

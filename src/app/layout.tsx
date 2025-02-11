@@ -15,9 +15,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ReduxProvider>
-  
-          <body className=" font-poppins">{children}</body>
-
+        <body className=" font-poppins">
+          {children}
+          <script
+            src="https://messenger.svc.chative.io/static/v1.0/channels/s7f519522-b708-42f4-9a90-fe5bf2912041/messenger.js?mode=livechat"
+            defer
+          ></script>
+        </body>
       </ReduxProvider>
     </html>
   );

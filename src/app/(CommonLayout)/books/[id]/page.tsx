@@ -88,6 +88,7 @@ const SingleBookDetailPage = ({
     fetchData();
   }, [id]);
 
+    {/* This function will add the book item to the empty cart we have in cartSlice */}
   const handleAdd = (book: Book) => {
     dispatch(add(book));
 
@@ -204,6 +205,7 @@ const SingleBookDetailPage = ({
 
           {/* Buttons Section */}
           <div className="flex flex-col space-y-4 mt-auto pt-16">
+            {/* This button will add the book item to the empty cart we have in cartSlice */}
             <button
               onClick={() => handleAdd(details)}
               className="w-full bg-primary_blue text-white text-lg px-8 py-4 rounded-md hover:bg-blue-700 transition-all duration-200 transform hover:translate-y-[-2px] hover:shadow-lg"

@@ -52,34 +52,36 @@ const WhyAreWeSpecial: React.FC = () => {
       <div className="w-full bg-[#FFEED6]">
         <div className="bg-[#B32025] rounded-b-2xl mx-4 sm:mx-10 lg:mx-[120px] mb-8 sm:mb-[84px] px-4 sm:px-8 py-8">
           <div className="flex flex-col items-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-[500px] mb-8 text-center text-[#F5D36B]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-12 text-center text-[#F5D36B] mt-[440px]">
               WHY ARE WE SPECIAL
             </h2>
 
-            <div className="w-full max-w-6xl flex flex-col items-center space-y-8">
+            <div className="w-full max-w-6xl flex flex-col items-center space-y-12 md:space-y-16">
               {features.map((feature, index) => (
                 <div
                   key={feature.id}
-                  className={`flex flex-col md:flex-row items-center md:items-start justify-center py-4 ${
+                  className={`w-full flex flex-col md:flex-row items-center gap-6 md:gap-12 ${
                     index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                   }`}
                 >
-                  {/* Image */}
-                  <div className="relative w-full sm:w-[400px] md:w-[480px] lg:w-[508px] h-[250px] sm:h-[280px] md:h-[303px] mb-4 md:mb-0 flex-shrink-0">
-                    <Image
-                      src={feature.imageUrl}
-                      alt={feature.title}
-                      fill
-                      className="object-cover transform hover:scale-105 transition-transform duration-500"
-                    />
+                  {/* Image Container */}
+                  <div className="w-full md:w-1/2 aspect-[16/10] relative">
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={feature.imageUrl}
+                        alt={feature.title}
+                        fill
+                        className="object-cover rounded-lg transform hover:scale-105 transition-transform duration-500"
+                      />
+                    </div>
                   </div>
 
-                  {/* Text */}
-                  <div className="flex flex-col text-center md:text-left px-4 pt-12 md:px-8">
-                    <h3 className="text-2xl md:text-3xl font-semibold mb-2">
+                  {/* Text Container */}
+                  <div className="w-full md:w-1/2 flex flex-col text-center md:text-left">
+                    <h3 className="text-2xl md:text-3xl font-semibold mb-4">
                       {feature.title}
                     </h3>
-                    <p className="text-lg">{feature.description}</p>
+                    <p className="text-lg leading-relaxed">{feature.description}</p>
                   </div>
                 </div>
               ))}
