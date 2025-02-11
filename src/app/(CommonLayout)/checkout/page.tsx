@@ -1,12 +1,19 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { useSelector } from 'react-redux';
-import { RootState } from '../../redux/store';
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaShoppingCart, FaTruck } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaShoppingCart,
+  FaTruck,
+} from "react-icons/fa";
 import Image from "next/image";
 import { postOrder } from "@/services/postReq";
-import Swal from 'sweetalert2'; // Import SweetAlert
+import Swal from "sweetalert2"; // Import SweetAlert
 
 const CheckoutPage = () => {
   const [name, setName] = useState("");
@@ -19,27 +26,47 @@ const CheckoutPage = () => {
 
   const cartItems = useSelector((state: RootState) => state.cart);
 
-  const totalPrice = useMemo(() => {
-    return cartItems.reduce((total: number, item: { price: { discounted: number }, quantity: number }) => {
-      return total + (item.price.discounted * item.quantity);
-    }, 0);
-  }, [cartItems]);
+  const deliveryCharge = useMemo(() => {
+    return deliveryOption === "insideDhaka" ? 60 : 120;
+  }, [deliveryOption]);
 
+  const totalPrice = useMemo(() => {
+    const itemsTotal = cartItems.reduce(
+      (
+        total: number,
+        item: { price: { discounted: number }; quantity: number }
+      ) => {
+        return total + item.price.discounted * item.quantity;
+      },
+      0
+    );
+
+    return itemsTotal + deliveryCharge;
+  }, [cartItems, deliveryCharge]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = { name, email, phone, address, city, zip, deliveryOption, cartItems, totalPrice }; // Include totalPrice
+    const formData = {
+      name,
+      email,
+      phone,
+      address,
+      city,
+      zip,
+      deliveryOption,
+      cartItems,
+      totalPrice,
+    }; // Include totalPrice
     console.log("Checkout Form Data:", formData);
     try {
       await postOrder(formData);
-     
 
       // SweetAlert for success
       Swal.fire({
-        icon: 'success',
-        title: 'Order Placed!',
-        text: 'Your order has been successfully placed.',
-        confirmButtonText: 'OK'
+        icon: "success",
+        title: "Order Placed!",
+        text: "Your order has been successfully placed.",
+        confirmButtonText: "OK",
       });
 
       // Reset the form
@@ -50,26 +77,23 @@ const CheckoutPage = () => {
       setCity("");
       setZip("");
       setDeliveryOption("insideDhaka");
-
     } catch (error) {
       console.error("Error placing order:", error);
       // SweetAlert for error
       Swal.fire({
-        icon: 'error',
-        title: 'Order Failed',
-        text: 'There was an error processing your order. Please try again.',
-        confirmButtonText: 'OK'
+        icon: "error",
+        title: "Order Failed",
+        text: "There was an error processing your order. Please try again.",
+        confirmButtonText: "OK",
       });
     }
   };
 
   const orderSummaryClasses = useMemo(() => {
-    let classes = 'divide-y divide-gray-200 overflow-y-auto';
+    let classes = "divide-y divide-gray-200"; // Removed overflow-y-auto initially
 
     if (cartItems.length > 4) {
-      classes += ' max-h-[400px]';
-    } else {
-      classes += ' max-h-none';
+      classes += " overflow-y-auto max-h-[400px]"; // Add scrollbar and max height only if more than 4 items
     }
 
     return classes;
@@ -80,22 +104,33 @@ const CheckoutPage = () => {
       <div className="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden">
         {/* Header Section */}
         <div className="bg-primary_red text-white py-8 px-8 flex items-center justify-between">
-          <h2 className="text-3xl font-semibold tracking-wide">Checkout Information</h2>
+          <h2 className="text-3xl font-semibold tracking-wide">
+            Checkout Information
+          </h2>
         </div>
 
         {/* Main Content Area */}
         <div className="p-8">
           {/* Breadcrumb */}
           <nav className="pb-6 flex items-center text-lg">
-            <Link href="/" className="text-gray-500 hover:text-gray-700 transition-colors duration-200">
+            <Link
+              href="/"
+              className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+            >
               Home
             </Link>
             <span className="mx-3 text-gray-400">/</span>
-            <Link href="/cart" className="text-gray-500 hover:text-gray-700 transition-colors duration-200">
+            <Link
+              href="/cart"
+              className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+            >
               Cart
             </Link>
             <span className="mx-3 text-gray-400">/</span>
-            <Link href="/checkout" className="text-primary_blue transition-colors duration-200 font-bold">
+            <Link
+              href="/checkout"
+              className="text-primary_blue transition-colors duration-200 font-bold"
+            >
               Checkout
             </Link>
           </nav>
@@ -112,41 +147,98 @@ const CheckoutPage = () => {
                   <FaShoppingCart className="text-primary_red" /> Order Summary
                 </h3>
                 <ul className={orderSummaryClasses}>
-                  {cartItems.map((item: { _id: string; image_url: string; title: string; description: string; price: { discounted: number }; quantity: number }) => (
-                    <li key={item._id} className="py-4 flex items-center space-x-4">
-                      {/* Image */}
-                      <div className="flex-shrink-0 w-20 h-20">
-                        <Image
-                          src={item.image_url}
-                          alt={item.title}
-                          width={80}
-                          height={80}
-                          className="rounded-md object-cover"
-                        />
-                      </div>
+                  {cartItems.map(
+                    (item: {
+                      _id: string;
+                      image_url: string;
+                      title: string;
+                      description: string;
+                      price: { discounted: number };
+                      quantity: number;
+                    }) => (
+                      <li
+                        key={item._id}
+                        className="py-4 flex items-center space-x-4"
+                      >
+                        {/* Image */}
+                        <div className="flex-shrink-0 w-20 h-20">
+                          <Image
+                            src={item.image_url}
+                            alt={item.title}
+                            width={80}
+                            height={80}
+                            className="rounded-md object-cover"
+                          />
+                        </div>
 
-                      {/* Item Info */}
-                      <div className="flex-grow">
-                        <h4 className="text-lg font-semibold text-gray-900">{item.title}</h4>
-                        <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
-                      </div>
+                        {/* Item Info */}
+                        <div className="flex-grow">
+                          <h4 className="text-lg font-semibold text-gray-900">
+                            {item.title}
+                          </h4>
+                          <p className="text-gray-600 text-sm line-clamp-2">
+                            {item.description}
+                          </p>
+                        </div>
 
-                      {/* Quantity and Price */}
-                      <div className="text-right">
-                        <p className="text-primary_red font-bold w-[150px]">Quantity: {item.quantity}</p>
-                        <p className="text-gray-900 font-semibold">
-                          ৳ {(item.price.discounted * item.quantity).toFixed(2)}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
+                        {/* Quantity and Price */}
+                        <div className="text-right">
+                          <p className="text-primary_red font-bold w-[150px]">
+                            Quantity: {item.quantity}
+                          </p>
+                          <p className="text-gray-900 font-semibold">
+                            ৳{" "}
+                            {(item.price.discounted * item.quantity).toFixed(2)}
+                          </p>
+                        </div>
+                      </li>
+                    )
+                  )}
                 </ul>
 
                 {/* Cart Total */}
                 <div className="bg-gray-50 rounded-xl p-6 mt-6 shadow-inner">
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="text-xl font-bold text-gray-900">
+                      Subtotal
+                    </h4>
+                    <p className="text-xl font-bold text-gray-900 whitespace-nowrap">
+                      ৳{" "}
+                      {cartItems
+                        .reduce(
+                          (
+                            total: number,
+                            item: {
+                              price: { discounted: number };
+                              quantity: number;
+                            }
+                          ) => {
+                            return (
+                              total + item.price.discounted * item.quantity
+                            );
+                          },
+                          0
+                        )
+                        .toFixed(2)}
+                    </p>
+                  </div>
                   <div className="flex justify-between items-center">
-                    <h4 className="text-xl font-bold text-gray-900">Cart Total</h4>
-                    <p className="text-3xl font-bold text-primary_blue whitespace-nowrap">৳ {totalPrice.toFixed(2)}</p>
+                    <h4 className="text-xl font-bold text-gray-900">
+                      Delivery Charge
+                    </h4>
+                    <p className="text-xl font-bold text-gray-900 whitespace-nowrap">
+                      ৳ {deliveryCharge.toFixed(2)}
+                    </p>
+                  </div>
+                  <hr className="my-2 border-gray-300" />{" "}
+                  {/* Horizontal Border */}
+                  <div className="flex justify-between items-center">
+                    <h4 className="text-xl font-bold text-gray-900">
+                      Cart Total
+                    </h4>
+                    <p className="text-3xl font-bold text-primary_blue whitespace-nowrap py-4">
+                      ৳ {totalPrice.toFixed(2)}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -159,7 +251,10 @@ const CheckoutPage = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Full Name */}
                   <div>
-                    <label htmlFor="name" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label
+                      htmlFor="name"
+                      className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"
+                    >
                       <FaUser className="text-primary_red" /> Full Name
                     </label>
                     <input
@@ -175,7 +270,10 @@ const CheckoutPage = () => {
 
                   {/* Email Address */}
                   <div>
-                    <label htmlFor="email" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label
+                      htmlFor="email"
+                      className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"
+                    >
                       <FaEnvelope className="text-primary_red" /> Email Address
                     </label>
                     <input
@@ -191,7 +289,10 @@ const CheckoutPage = () => {
 
                   {/* Phone Number */}
                   <div>
-                    <label htmlFor="phone" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
+                    <label
+                      htmlFor="phone"
+                      className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"
+                    >
                       <FaPhone className="text-primary_red" /> Phone Number
                     </label>
                     <input
@@ -207,8 +308,12 @@ const CheckoutPage = () => {
 
                   {/* Shipping Address */}
                   <div>
-                    <label htmlFor="address" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2">
-                      <FaMapMarkerAlt className="text-primary_red" /> Shipping Address
+                    <label
+                      htmlFor="address"
+                      className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"
+                    >
+                      <FaMapMarkerAlt className="text-primary_red" /> Shipping
+                      Address
                     </label>
                     <input
                       type="text"
@@ -224,7 +329,12 @@ const CheckoutPage = () => {
                   {/* City and Zip Code */}
                   <div className="flex gap-4">
                     <div className="w-1/2">
-                      <label htmlFor="city" className="block text-gray-700 text-sm font-bold mb-2">City</label>
+                      <label
+                        htmlFor="city"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        City
+                      </label>
                       <input
                         type="text"
                         id="city"
@@ -236,7 +346,12 @@ const CheckoutPage = () => {
                       />
                     </div>
                     <div className="w-1/2">
-                      <label htmlFor="zip" className="block text-gray-700 text-sm font-bold mb-2">ZIP Code</label>
+                      <label
+                        htmlFor="zip"
+                        className="block text-gray-700 text-sm font-bold mb-2"
+                      >
+                        ZIP Code
+                      </label>
                       <input
                         type="text"
                         id="zip"
@@ -251,15 +366,25 @@ const CheckoutPage = () => {
 
                   {/* Delivery Option */}
                   <div>
-                    <label htmlFor="deliveryOption" className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"><FaTruck className="text-primary_red"/>Delivery Option</label>
+                    <label
+                      htmlFor="deliveryOption"
+                      className="text-gray-700 text-sm font-bold mb-2 flex items-center gap-2"
+                    >
+                      <FaTruck className="text-primary_red" />
+                      Delivery Option
+                    </label>
                     <select
                       id="deliveryOption"
                       className="shadow-sm appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                       value={deliveryOption}
                       onChange={(e) => setDeliveryOption(e.target.value)}
                     >
-                      <option value="insideDhaka">Delivery inside Dhaka</option>
-                      <option value="outsideDhaka">Delivery outside Dhaka</option>
+                      <option value="insideDhaka">
+                        Delivery inside Dhaka (60৳)
+                      </option>
+                      <option value="outsideDhaka">
+                        Delivery outside Dhaka (120৳)
+                      </option>
                     </select>
                   </div>
 
