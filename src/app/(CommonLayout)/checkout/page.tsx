@@ -28,7 +28,7 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = { name, email, phone, address, city, zip, deliveryOption, cartItems };
+    const formData = { name, email, phone, address, city, zip, deliveryOption, cartItems, totalPrice }; // Include totalPrice
     console.log("Checkout Form Data:", formData);
     try {
       await postOrder(formData);

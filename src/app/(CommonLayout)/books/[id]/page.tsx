@@ -164,7 +164,7 @@ const SingleBookDetailPage = ({
           Books
         </Link>
         <span className="mx-3 text-gray-400">/</span>
-        <span className="text-gray-900 font-semibold">{details.title}</span>
+        <span className="text-gray-900 font-semibold">{details?.title}</span>
       </nav>
 
       {/* Product Grid */}
@@ -173,8 +173,8 @@ const SingleBookDetailPage = ({
         <div className="space-y-6">
           <div className="aspect-square relative overflow-hidden rounded-lg bg-gray-100 shadow-lg">
             <Image
-              src={details.image_url}
-              alt={`${details.title} book cover`}
+              src={details?.image_url}
+              alt={`${details?.title} book cover`}
               fill
               style={{ objectFit: "contain" }}
               className="transition-transform duration-300 hover:scale-105"
@@ -186,20 +186,20 @@ const SingleBookDetailPage = ({
         <div className="flex flex-col space-y-8">
           <div className="space-y-8">
             <h1 className="text-5xl font-bold text-primary_red">
-              {details.title}
+              {details?.title}
             </h1>
 
             <div className="flex items-center space-x-4">
               <p className="text-gray-500 text-xl line-through">
-                ৳ {details.price.original}
+                ৳ {details?.price.original}
               </p>
               <p className="text-3xl font-bold text-primary_red">
-                ৳ {details.price.discounted}
+                ৳ {details?.price.discounted}
               </p>
             </div>
 
             <p className="text-lg text-gray-700 leading-relaxed pb-8 max-h-[180px] overflow-y-auto">
-              {details.description}
+              {details?.description}
             </p>
           </div>
 
@@ -226,45 +226,45 @@ const SingleBookDetailPage = ({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 text-lg">
         <div>
           <h3 className="font-bold mb-3 text-2xl text-primary_red">Author</h3>
-          <p className="text-gray-700">{details.author}</p>
+          <p className="text-gray-700">{details?.author}</p>
           <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
             ISBN
           </h3>
-          <p className="text-gray-700">{details.isbn}</p>
+          <p className="text-gray-700">{details?.isbn}</p>
           <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
             Size
           </h3>
-          <p className="text-gray-700">{details.size}</p>
+          <p className="text-gray-700">{details?.size}</p>
         </div>
 
         <div>
           <h3 className="font-bold text-2xl mb-3 text-primary_red">
             Illustrations
           </h3>
-          <p className="text-gray-700">{details.illustrator}</p>
+          <p className="text-gray-700">{details?.illustrator}</p>
           <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
             Pages
           </h3>
-          <p className="text-gray-700">{details.pages}</p>
+          <p className="text-gray-700">{details?.pages}</p>
           <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
             Age Category
           </h3>
-          <p className="text-gray-700">{details.ages_category}</p>
+          <p className="text-gray-700">{details?.ages_category}</p>
         </div>
 
         <div>
           <h3 className="font-bold text-2xl mb-3 text-primary_red">
             Publication Date
           </h3>
-          <p className="text-gray-700">{details.publication_date}</p>
+          <p className="text-gray-700">{details?.publication_date}</p>
           <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
             Format
           </h3>
-          <p className="text-gray-700">{details.format}</p>
+          <p className="text-gray-700">{details?.format}</p>
           <h3 className="font-bold text-2xl mt-6 mb-3 text-primary_red">
             Book Category
           </h3>
-          <p className="text-gray-700">{details.books_category}</p>
+          <p className="text-gray-700">{details?.books_category}</p>
         </div>
       </div>
 

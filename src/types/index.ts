@@ -54,4 +54,5 @@ export interface Order {
   address: string;
   city: string;
   cartItems: OrderItem[];
+  totalPrice?: number;
 }
