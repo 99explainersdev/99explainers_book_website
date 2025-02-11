@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaShoppingCart, FaTruck } from "react-icons/fa";
 import Image from "next/image";
+import { postOrder } from "@/services/postReq";
+import Swal from 'sweetalert2'; // Import SweetAlert
 
 const CheckoutPage = () => {
   const [name, setName] = useState("");
@@ -16,22 +17,50 @@ const CheckoutPage = () => {
   const [zip, setZip] = useState("");
   const [deliveryOption, setDeliveryOption] = useState("insideDhaka"); // Default value
 
-
-  // K
   const cartItems = useSelector((state: RootState) => state.cart);
+
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total: number, item: { price: { discounted: number }, quantity: number }) => {
       return total + (item.price.discounted * item.quantity);
     }, 0);
   }, [cartItems]);
 
-  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = { name, email, phone, address, city, zip, deliveryOption, cartItems };
     console.log("Checkout Form Data:", formData);
-    router.push('/thank-you');
+    try {
+      await postOrder(formData);
+     
+
+      // SweetAlert for success
+      Swal.fire({
+        icon: 'success',
+        title: 'Order Placed!',
+        text: 'Your order has been successfully placed.',
+        confirmButtonText: 'OK'
+      });
+
+      // Reset the form
+      setName("");
+      setEmail("");
+      setPhone("");
+      setAddress("");
+      setCity("");
+      setZip("");
+      setDeliveryOption("insideDhaka");
+
+    } catch (error) {
+      console.error("Error placing order:", error);
+      // SweetAlert for error
+      Swal.fire({
+        icon: 'error',
+        title: 'Order Failed',
+        text: 'There was an error processing your order. Please try again.',
+        confirmButtonText: 'OK'
+      });
+    }
   };
 
   const orderSummaryClasses = useMemo(() => {
