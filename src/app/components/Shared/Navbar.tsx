@@ -28,17 +28,17 @@ const Navbar = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
-
   const handleSearchSubmit = useCallback<FormEventHandler<HTMLFormElement>>(
     (e) => {
       e.preventDefault();
-      router.push(`/books?search=${searchQuery}`);
+      if (!searchQuery.trim()) return; // Prevent empty search
+      router.push(`/book?search=${encodeURIComponent(searchQuery)}`);
       setSearchQuery("");
       setMenuOpen(false); // Close the mobile menu after search
     },
     [searchQuery, router]
   );
-
+  
   return (
     <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">

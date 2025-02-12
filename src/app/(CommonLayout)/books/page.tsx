@@ -20,6 +20,7 @@ const BooksDisplay = () => {
 
 
   const fetchBooks = useCallback(async () => {
+
     setIsLoading(true);
     setNoResults(false);
     setSuggestions([]);
@@ -77,18 +78,18 @@ const BooksDisplay = () => {
   };
 
   const handleSearch = () => {
-    const term = inputValue.toLowerCase();
+  const term = inputValue.toLowerCase();
 
-    const newFilteredBooks = books.filter((book) => {
-      return (
-        book.title.toLowerCase().includes(term)
-      );
-    });
+  const newFilteredBooks = books.filter((book) => {
+    return book.title.toLowerCase().includes(term);
+  });
 
-    setFilteredBooks(newFilteredBooks);
-    setNoResults(newFilteredBooks.length === 0);
-     setInputValue(""); // Clear the input field after search
-  };
+  setFilteredBooks(newFilteredBooks);
+  setNoResults(newFilteredBooks.length === 0);
+  setInputValue(""); // Clear the input field after search
+  setSuggestions([]); // Clear the suggestions after search
+};
+
 
   const handleBooksClick = () => {
     setFilteredBooks(books);
