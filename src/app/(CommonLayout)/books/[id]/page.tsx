@@ -24,10 +24,11 @@ const SingleBookDetailPage = ({
   const [error, setError] = useState<string | null>(null);
   const sliderRef = useRef<HTMLDivElement>(null);
   const [startIndex, setStartIndex] = useState(0);
-  const visibleBooks = 3;
+  const [visibleBooks, setVisibleBooks] = useState(3); // Initial value
+
   const router = useRouter();
   const dispatch = useDispatch();
-  
+
   const handleCheckout = useCallback(() => {
     if (details) {
       // Add the current book to the cart FIRST
@@ -87,6 +88,29 @@ const SingleBookDetailPage = ({
 
     fetchData();
   }, [id]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1280) { //xl breakpoint and above
+        setVisibleBooks(3);
+      } else if (window.innerWidth >= 768) { //md breakpoint and above
+        setVisibleBooks(2);
+      } else {
+        setVisibleBooks(1);
+      }
+    };
+
+    // Set initial value on mount
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listener on unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
     {/* This function will add the book item to the empty cart we have in cartSlice */}
   const handleAdd = (book: Book) => {
@@ -277,13 +301,13 @@ const SingleBookDetailPage = ({
 
           <div className="relative">
             <div
-              className="flex space-x-8 px-4 overflow-hidden"
+              className="flex space-x-4 lg:space-x-8 px-4 overflow-hidden scroll-smooth"
               ref={sliderRef}
             >
               {relatedBooks.map((book: Book) => (
-                <div key={book._id} className="w-72 flex-shrink-0 group">
+                <div key={book._id} className="w-64 sm:w-72 flex-shrink-0 group">
                   <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4">
-                    <div className="relative h-96 w-full mb-4 rounded-lg overflow-hidden">
+                    <div className="relative h-80 sm:h-96 w-full mb-4 rounded-lg overflow-hidden">
                       <Image
                         src={book.image_url}
                         alt={book.title}
@@ -312,21 +336,43 @@ const SingleBookDetailPage = ({
               ))}
             </div>
 
-            {/* Navigation Buttons */}
-            <button
-              onClick={handlePrev}
-              disabled={!hasPrev}
-              className="absolute left-[-2rem] top-1/2 transform -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <AiOutlineLeft size={35} />
-            </button>
-            <button
-              onClick={handleNext}
-              disabled={!hasNext}
-              className="absolute right-[-2rem] top-1/2 transform -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <AiOutlineRight size={35} />
-            </button>
+            {/* Navigation Buttons - Conditionally Rendered */}
+            {relatedBooks.length > visibleBooks && (
+            <div className="flex justify-between sm:hidden">
+              <button
+                onClick={handlePrev}
+                disabled={!hasPrev}
+                className="bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <AiOutlineLeft size={35} />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={!hasNext}
+                className="bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <AiOutlineRight size={35} />
+              </button>
+            </div>
+            )}
+             {relatedBooks.length > visibleBooks && (
+            <>
+              <button
+                onClick={handlePrev}
+                disabled={!hasPrev}
+                className="absolute left-[-1rem] top-1/2 transform -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed hidden sm:block"
+              >
+                <AiOutlineLeft size={35} />
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={!hasNext}
+                className="absolute right-[-1rem] top-1/2 transform -translate-y-1/2 bg-white/80 text-black p-3 rounded-full shadow-lg hover:bg-white transition-all disabled:opacity-30 disabled:cursor-not-allowed hidden sm:block"
+              >
+                <AiOutlineRight size={35} />
+              </button>
+            </>
+            )}
           </div>
         </div>
       )}

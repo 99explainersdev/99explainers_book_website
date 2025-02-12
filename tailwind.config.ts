@@ -12,6 +12,7 @@ export default {
         primary_red: "#B72025",
         primary_cream: "#EFE7DA",
         primary_blue: "#493BB0",
+        primary_yellow: "#F5D368",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],

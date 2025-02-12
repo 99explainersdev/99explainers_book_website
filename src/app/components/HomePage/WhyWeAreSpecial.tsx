@@ -78,7 +78,7 @@ const WhyAreWeSpecial: React.FC = () => {
 
                   {/* Text Container */}
                   <div className="w-full md:w-1/2 flex flex-col text-center md:text-left">
-                    <h3 className="text-2xl md:text-3xl font-semibold mb-4">
+                    <h3 className="text-2xl md:text-3xl font-bold mb-4 text-primary_yellow ">
                       {feature.title}
                     </h3>
                     <p className="text-lg leading-relaxed">{feature.description}</p>
