@@ -77,15 +77,11 @@ const BooksDisplay = () => {
   };
 
   const handleSearch = () => {
-
     const term = inputValue.toLowerCase();
 
     const newFilteredBooks = books.filter((book) => {
       return (
-        book.title.toLowerCase().includes(term) ||
-        book.description.toLowerCase().includes(term) ||
-        book.author?.toLowerCase().includes(term) ||
-        book.books_category?.toLowerCase().includes(term)
+        book.title.toLowerCase().includes(term)
       );
     });
 
@@ -93,7 +89,6 @@ const BooksDisplay = () => {
     setNoResults(newFilteredBooks.length === 0);
      setInputValue(""); // Clear the input field after search
   };
-
 
   const handleBooksClick = () => {
     setFilteredBooks(books);
