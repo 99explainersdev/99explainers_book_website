@@ -111,8 +111,8 @@ const SingleBookContent = () => {
                       <span className="text-2xl font-bold text-primary_red">
                         ৳ {book.price.discounted}
                       </span>
-                      <span className="text-gray-500 line-through">
-                        ৳ {book.price.original}
+                      <span className="text-2xl font-bold text-gray-500">
+                        <del>৳ {book.price.original}</del>
                       </span>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { getAllBooks } from "@/services/getReq";
 import Image from "next/image";
@@ -7,7 +7,6 @@ import { Book } from "@/types";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import LoadingSpinner from "@/app/components/Shared/LoadingSpinner";
-
 
 const BooksDisplay = () => {
   const [inputValue, setInputValue] = useState("");
@@ -19,6 +18,7 @@ const BooksDisplay = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedAge, setSelectedAge] = useState<string>("all");
   const [sortOrder, setSortOrder] = useState<string>(""); // "" | "asc" | "desc"
+  const [searchTerm, setSearchTerm] = useState(""); // This state holds the search term
 
   const categoryOptions = [
     "All Categories",
@@ -30,18 +30,9 @@ const BooksDisplay = () => {
     "Teen Book",
   ];
 
-  const ageOptions = [
-    "All Ages",
-    "0-4",
-    "5-8",
-    "9-12",
-    "13+",
-  ];
-
-
+  const ageOptions = ["All Ages", "0-4", "5-8", "9-12", "13+"];
 
   const fetchBooks = useCallback(async () => {
-
     setIsLoading(true);
     setNoResults(false);
     setSuggestions([]);
@@ -67,10 +58,6 @@ const BooksDisplay = () => {
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
-
-
-
-    // Update width on mount
 
   const generateSuggestions = (term: string) => {
     if (!term) {
@@ -98,7 +85,6 @@ const BooksDisplay = () => {
     setSuggestions(generateSuggestions(term)); // Array of suggested books only 5 will be shown at most if matches
   };
 
-
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion);
     setSuggestions([]);
@@ -106,23 +92,10 @@ const BooksDisplay = () => {
 
   // The books that matches the search term will be returned
   const handleSearch = () => {
-    const term = inputValue.toLowerCase();
-    let newFilteredBooks = books.filter((book) => {
-      return book.title.toLowerCase().includes(term);
-    });
-
-    // Apply category and age filters
-    newFilteredBooks = applyFilters(newFilteredBooks);
-
-    // Apply sorting
-    newFilteredBooks = applySorting(newFilteredBooks);
-
-    setFilteredBooks(newFilteredBooks);
-    setNoResults(newFilteredBooks.length === 0);
+    setSearchTerm(inputValue); // Update the search term state with the input value
     setInputValue(""); // Clear the input field after search
     setSuggestions([]); // Clear the suggestions after search
   };
-
 
   const handleBooksClick = () => {
     setFilteredBooks(books);
@@ -132,11 +105,12 @@ const BooksDisplay = () => {
     setSelectedCategory("all");
     setSelectedAge("all");
     setSortOrder("");
+    setSearchTerm(""); //Clear search
   };
 
-
-
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setSelectedCategory(event.target.value);
   };
 
@@ -148,36 +122,42 @@ const BooksDisplay = () => {
     setSortOrder(event.target.value);
   };
 
-  const applyFilters = useCallback( (bookList: Book[]): Book[] => {
-    let filtered = bookList;
+  const applyFilters = useCallback(
+    (bookList: Book[]): Book[] => {
+      let filtered = bookList;
 
-    if (selectedCategory !== "all") {
-      filtered = filtered.filter(
-        (book) => book.books_category === selectedCategory.toLowerCase() //Added toLower here just in case
-      );
-    }
+      if (selectedCategory !== "all") {
+        filtered = filtered.filter(
+          (book) => book.books_category === selectedCategory.toLowerCase() //Added toLower here just in case
+        );
+      }
 
-    if (selectedAge !== "all") {
-      filtered = filtered.filter((book) => book.ages_category === selectedAge);
-    }
+      if (selectedAge !== "all") {
+        filtered = filtered.filter(
+          (book) => book.ages_category === selectedAge
+        );
+      }
 
-    return filtered;
-  },[selectedCategory, selectedAge]);
+      return filtered;
+    },
+    [selectedCategory, selectedAge]
+  );
 
-
-  const applySorting = useCallback((bookList: Book[]): Book[] => {
-    if (sortOrder === "asc") {
-      return [...bookList].sort(
-        (a, b) => a.price.discounted - b.price.discounted
-      );
-    } else if (sortOrder === "desc") {
-      return [...bookList].sort(
-        (a, b) => b.price.discounted - a.price.discounted
-      );
-    }
-    return bookList;
-  },[sortOrder]);
-
+  const applySorting = useCallback(
+    (bookList: Book[]): Book[] => {
+      if (sortOrder === "asc") {
+        return [...bookList].sort(
+          (a, b) => a.price.discounted - b.price.discounted
+        );
+      } else if (sortOrder === "desc") {
+        return [...bookList].sort(
+          (a, b) => b.price.discounted - a.price.discounted
+        );
+      }
+      return bookList;
+    },
+    [sortOrder]
+  );
 
   useEffect(() => {
     let newFilteredBooks = [...books];
@@ -186,21 +166,27 @@ const BooksDisplay = () => {
     newFilteredBooks = applyFilters(newFilteredBooks);
 
     // Apply search filter
-    if (inputValue) {
-      const term = inputValue.toLowerCase();
+    if (searchTerm) { // Use the searchTerm state
+      const term = searchTerm.toLowerCase();
       newFilteredBooks = newFilteredBooks.filter((book) =>
         book.title.toLowerCase().includes(term)
       );
     }
-
 
     // Apply sorting
     newFilteredBooks = applySorting(newFilteredBooks);
 
     setFilteredBooks(newFilteredBooks);
     setNoResults(newFilteredBooks.length === 0);
-  }, [books, selectedCategory, selectedAge, inputValue, sortOrder, applyFilters, applySorting]);
-
+  }, [
+    books,
+    selectedCategory,
+    selectedAge,
+    searchTerm, // Use the searchTerm state
+    sortOrder,
+    applyFilters,
+    applySorting,
+  ]);
 
   if (isLoading) {
     return (
@@ -262,7 +248,10 @@ const BooksDisplay = () => {
             className="p-4 rounded-2xl bg-white text-primary_red border-2 border-gray-200 focus:border-primary_blue focus:outline-none focus:ring-2 focus:ring-primary_blue/20 shadow-sm text-lg min-w-[200px] cursor-pointer transition-all duration-300"
           >
             {categoryOptions.map((category) => (
-              <option key={category} value={category === "All Categories" ? "all" : category}>
+              <option
+                key={category}
+                value={category === "All Categories" ? "all" : category}
+              >
                 {category}
               </option>
             ))}
@@ -310,7 +299,7 @@ const BooksDisplay = () => {
         </nav>
 
         {/* Books Grid */}
-          { noResults ? (
+        {noResults ? (
           <div className="text-center text-gray-500 text-lg">
             No books found matching your search criteria.
           </div>
@@ -355,6 +344,9 @@ const BooksDisplay = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-2xl font-bold text-primary_red">
                         ৳ {book.price.discounted}
+                      </span>
+                      <span className="text-2xl font-bold text-gray-500">
+                        <del>৳ {book.price.original}</del>
                       </span>
                     </div>
                   </div>
