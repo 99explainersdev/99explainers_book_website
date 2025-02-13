@@ -19,6 +19,7 @@ const SingleBook = () => {
 // Move the logic to a separate component
 const SingleBookContent = () => {
   const searchParams = useSearchParams();
+
   const searchQuery = searchParams.get("search");
 
   const [books, setBooks] = useState<

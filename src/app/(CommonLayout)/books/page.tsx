@@ -16,6 +16,27 @@ const BooksDisplay = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [noResults, setNoResults] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedAge, setSelectedAge] = useState<string>("all");
+  const [sortOrder, setSortOrder] = useState<string>(""); // "" | "asc" | "desc"
+
+  const categoryOptions = [
+    "All Categories",
+    "Story Book",
+    "Picture Book",
+    "Coloring Book",
+    "Rhyme Books",
+    "non fictional book",
+    "Teen Book",
+  ];
+
+  const ageOptions = [
+    "All Ages",
+    "0-4",
+    "5-8",
+    "9-12",
+    "13+",
+  ];
 
 
 
@@ -26,7 +47,10 @@ const BooksDisplay = () => {
     setSuggestions([]);
     try {
       const res = await getAllBooks();
-      const initialBooks: Book[] = res.books;
+      const initialBooks: Book[] = res.books.map((book: Book) => ({
+        ...book,
+        books_category: book.books_category.toLowerCase(),
+      }));
       setBooks(initialBooks);
       setFilteredBooks(initialBooks);
       if (initialBooks.length === 0) {
@@ -44,6 +68,9 @@ const BooksDisplay = () => {
     fetchBooks();
   }, [fetchBooks]);
 
+
+
+    // Update width on mount
 
   const generateSuggestions = (term: string) => {
     if (!term) {
@@ -68,7 +95,7 @@ const BooksDisplay = () => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const term = event.target.value;
     setInputValue(term);
-    setSuggestions(generateSuggestions(term));
+    setSuggestions(generateSuggestions(term)); // Array of suggested books only 5 will be shown at most if matches
   };
 
 
@@ -77,18 +104,24 @@ const BooksDisplay = () => {
     setSuggestions([]);
   };
 
+  // The books that matches the search term will be returned
   const handleSearch = () => {
-  const term = inputValue.toLowerCase();
+    const term = inputValue.toLowerCase();
+    let newFilteredBooks = books.filter((book) => {
+      return book.title.toLowerCase().includes(term);
+    });
 
-  const newFilteredBooks = books.filter((book) => {
-    return book.title.toLowerCase().includes(term);
-  });
+    // Apply category and age filters
+    newFilteredBooks = applyFilters(newFilteredBooks);
 
-  setFilteredBooks(newFilteredBooks);
-  setNoResults(newFilteredBooks.length === 0);
-  setInputValue(""); // Clear the input field after search
-  setSuggestions([]); // Clear the suggestions after search
-};
+    // Apply sorting
+    newFilteredBooks = applySorting(newFilteredBooks);
+
+    setFilteredBooks(newFilteredBooks);
+    setNoResults(newFilteredBooks.length === 0);
+    setInputValue(""); // Clear the input field after search
+    setSuggestions([]); // Clear the suggestions after search
+  };
 
 
   const handleBooksClick = () => {
@@ -96,8 +129,77 @@ const BooksDisplay = () => {
     setInputValue("");
     setSuggestions([]);
     setNoResults(false);
+    setSelectedCategory("all");
+    setSelectedAge("all");
+    setSortOrder("");
   };
 
+
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(event.target.value);
+  };
+
+  const handleAgeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedAge(event.target.value);
+  };
+
+  const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSortOrder(event.target.value);
+  };
+
+  const applyFilters = useCallback( (bookList: Book[]): Book[] => {
+    let filtered = bookList;
+
+    if (selectedCategory !== "all") {
+      filtered = filtered.filter(
+        (book) => book.books_category === selectedCategory.toLowerCase() //Added toLower here just in case
+      );
+    }
+
+    if (selectedAge !== "all") {
+      filtered = filtered.filter((book) => book.ages_category === selectedAge);
+    }
+
+    return filtered;
+  },[selectedCategory, selectedAge]);
+
+
+  const applySorting = useCallback((bookList: Book[]): Book[] => {
+    if (sortOrder === "asc") {
+      return [...bookList].sort(
+        (a, b) => a.price.discounted - b.price.discounted
+      );
+    } else if (sortOrder === "desc") {
+      return [...bookList].sort(
+        (a, b) => b.price.discounted - a.price.discounted
+      );
+    }
+    return bookList;
+  },[sortOrder]);
+
+
+  useEffect(() => {
+    let newFilteredBooks = [...books];
+
+    // Apply category and age filters
+    newFilteredBooks = applyFilters(newFilteredBooks);
+
+    // Apply search filter
+    if (inputValue) {
+      const term = inputValue.toLowerCase();
+      newFilteredBooks = newFilteredBooks.filter((book) =>
+        book.title.toLowerCase().includes(term)
+      );
+    }
+
+
+    // Apply sorting
+    newFilteredBooks = applySorting(newFilteredBooks);
+
+    setFilteredBooks(newFilteredBooks);
+    setNoResults(newFilteredBooks.length === 0);
+  }, [books, selectedCategory, selectedAge, inputValue, sortOrder, applyFilters, applySorting]);
 
 
   if (isLoading) {
@@ -154,8 +256,38 @@ const BooksDisplay = () => {
             Search
           </button>
 
-          <select className="p-4 rounded-2xl bg-white text-primary_red border-2 border-gray-200 focus:border-primary_blue focus:outline-none focus:ring-2 focus:ring-primary_blue/20 shadow-sm text-lg min-w-[200px] cursor-pointer transition-all duration-300">
-            <option value="all">All Categories</option>
+          <select
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+            className="p-4 rounded-2xl bg-white text-primary_red border-2 border-gray-200 focus:border-primary_blue focus:outline-none focus:ring-2 focus:ring-primary_blue/20 shadow-sm text-lg min-w-[200px] cursor-pointer transition-all duration-300"
+          >
+            {categoryOptions.map((category) => (
+              <option key={category} value={category === "All Categories" ? "all" : category}>
+                {category}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={selectedAge}
+            onChange={handleAgeChange}
+            className="p-4 rounded-2xl bg-white text-primary_red border-2 border-gray-200 focus:border-primary_blue focus:outline-none focus:ring-2 focus:ring-primary_blue/20 shadow-sm text-lg min-w-[200px] cursor-pointer transition-all duration-300"
+          >
+            {ageOptions.map((age) => (
+              <option key={age} value={age === "All Ages" ? "all" : age}>
+                {age}
+              </option>
+            ))}
+          </select>
+
+          <select
+            value={sortOrder}
+            onChange={handleSortChange}
+            className="p-4 rounded-2xl bg-white text-primary_red border-2 border-gray-200 focus:border-primary_blue focus:outline-none focus:ring-2 focus:ring-primary_blue/20 shadow-sm text-lg min-w-[200px] cursor-pointer transition-all duration-300"
+          >
+            <option value="">Sort By Price</option>
+            <option value="asc">Price: Low to High</option>
+            <option value="desc">Price: High to Low</option>
           </select>
         </div>
 
@@ -193,6 +325,7 @@ const BooksDisplay = () => {
                       alt={book.title}
                       fill
                       className="object-cover p-4"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Added sizes prop
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-primary_blue/90 to-transparent flex items-end justify-center p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <Link href={`/books/${book._id}`}>

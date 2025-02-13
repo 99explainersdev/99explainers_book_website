@@ -22,11 +22,3 @@ export const getSpecificBook = async (id: string) => {
   return book;
 };
 
-// export const getSerachedProduct = async ()=>{
-  
-//   const url = new URL(`${process.env.NEXT_PUBLIC_BASE_URL}/books/api/v1/search`);
-//   const response = await fetch(url.toString());
-
-//   const searchedBooks = await response.json();
-
-// }
