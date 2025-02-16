@@ -166,7 +166,8 @@ const BooksDisplay = () => {
     newFilteredBooks = applyFilters(newFilteredBooks);
 
     // Apply search filter
-    if (searchTerm) { // Use the searchTerm state
+    if (searchTerm) {
+      // Use the searchTerm state
       const term = searchTerm.toLowerCase();
       newFilteredBooks = newFilteredBooks.filter((book) =>
         book.title.toLowerCase().includes(term)
@@ -187,6 +188,13 @@ const BooksDisplay = () => {
     applyFilters,
     applySorting,
   ]);
+
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevent form submission if inside a form
+      handleSearch();
+    }
+  };
 
   if (isLoading) {
     return (
@@ -218,6 +226,7 @@ const BooksDisplay = () => {
               placeholder="Search for books..."
               value={inputValue}
               onChange={handleInputChange}
+              onKeyDown={handleInputKeyDown} // Add this line
               className="p-4 pl-12 w-full rounded-2xl bg-white text-gray-700 border-2 border-gray-200 focus:border-primary_blue focus:outline-none focus:ring-2 focus:ring-primary_blue/20 shadow-sm text-lg transition-all duration-300"
             />
 
