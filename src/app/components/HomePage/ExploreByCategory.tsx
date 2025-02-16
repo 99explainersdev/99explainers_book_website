@@ -66,7 +66,9 @@ const ExploreBYCategory: React.FC = () => {
             >
               {/* Image Link */}
               <Link
-                href={category.link}
+                // href={category.link}
+                href={`/category/${category.title}`}
+              
                 className="relative aspect-square w-28 sm:w-32 md:w-40 lg:w-44 xl:w-48 block"
               >
                 <Image
@@ -83,7 +85,7 @@ const ExploreBYCategory: React.FC = () => {
                 href={category.link}
                 className="bg-white hover:bg-red-600 text-red-600 hover:text-white text-sm sm:text-base font-semibold py-3 px-6 sm:px-8 rounded-full max-w-[220px] text-center transition-all duration-300 hover:shadow-lg whitespace-nowrap"
               >
-                {category.title}
+                {category?.title}
               </Link>
             </div>
           ))}

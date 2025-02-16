@@ -1,5 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+
 
 interface AgeCategory {
   id: number;
@@ -9,10 +11,10 @@ interface AgeCategory {
 
 const ExploreByAge: React.FC = () => {
   const ageCategories: AgeCategory[] = [
-    { id: 1, title: "Ages 0-4", imageUrl: "/assets/feature1.png" },
-    { id: 2, title: "Ages 5-8", imageUrl: "/assets/age5.png" },
-    { id: 3, title: "Ages 9-12", imageUrl: "/assets/age9.png" },
-    { id: 4, title: "Ages 13+", imageUrl: "/assets/age13.png" },
+    { id: 1, title: "0-4", imageUrl: "/assets/feature1.png" },
+    { id: 2, title: "5-8", imageUrl: "/assets/age5.png" },
+    { id: 3, title: "9-12", imageUrl: "/assets/age9.png" },
+    { id: 4, title: "13+", imageUrl: "/assets/age13.png" },
   ];
 
   return (
@@ -29,7 +31,7 @@ const ExploreByAge: React.FC = () => {
             <div key={category.id} className="flex flex-col items-center space-y-4">
               {/* Image Container */}
               <div className="relative w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56">
-                <Image
+               <Image
                   src={category.imageUrl}
                   alt={category.title}
                   fill
@@ -38,9 +40,11 @@ const ExploreByAge: React.FC = () => {
               </div>
 
               {/* Button */}
+              <Link   href={`/category/${category.title}`}>
               <button className="bg-white hover:bg-red-600 text-red-600 hover:text-white text-base sm:text-lg md:text-xl font-semibold py-2 sm:py-3 md:py-4 px-6 sm:px-8 rounded-full w-full max-w-[200px] transition duration-300">
-                {category.title}
+               Age: {category.title}
               </button>
+              </Link>
             </div>
           ))}
         </div>

@@ -38,7 +38,12 @@ const Navbar = () => {
     },
     [searchQuery, router]
   );
-  
+
+  // Function to close the mobile menu
+  const closeMenu = useCallback(() => {
+    setMenuOpen(false);
+  }, []);
+
   return (
     <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -99,37 +104,37 @@ const Navbar = () => {
                     All Books
                   </Link>
                   <Link
-                    href="/books?category=picture"
+                    href="/category/picture-books"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Picture Books
                   </Link>
                   <Link
-                    href="/books?category=story"
+                    href="/category/story-books"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Story Books
                   </Link>
                   <Link
-                    href="/books?category=coloring"
+                    href="/category/coloring-books"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Coloring Books
                   </Link>
                   <Link
-                    href="/books?category=rhyme"
+                    href="/category/rhyme-books"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Rhyme Books
                   </Link>
                   <Link
-                    href="/books?category=nonfiction"
+                    href="/category/non-fiction-books"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Non-Fiction Books
                   </Link>
                   <Link
-                    href="/books?category=teen"
+                    href="/category/teen-books"
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
                     Teen Books
@@ -196,51 +201,58 @@ const Navbar = () => {
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-red-500"
             />
           </form>
-          <Link href="/" className="text-gray-700 hover:text-red-600">
+          <Link href="/" className="text-gray-700 hover:text-red-600" onClick={closeMenu}>
             Home
           </Link>
-          <Link href="/books" className="text-gray-700 hover:text-red-600">
+          <Link href="/books" className="text-gray-700 hover:text-red-600" onClick={closeMenu}>
             All Books
           </Link>
           <Link
-            href="/books?category=picture"
+            href="/category/picture-books"
             className="text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             Picture Books
           </Link>
           <Link
-            href="/books?category=story"
+            href="/category/story-books"
             className="text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             Story Books
           </Link>
           <Link
-            href="/books?category=coloring"
+            href="/category/coloring-books"
             className="text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             Coloring Books
           </Link>
           <Link
-            href="/books?category=rhyme"
+            href="/category/rhyme-books"
             className="text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             Rhyme Books
           </Link>
           <Link
-            href="/books?category=nonfiction"
+            href="/category/non-fiction-books"
             className="text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             Non-Fiction Books
           </Link>
           <Link
-            href="/books?category=teen"
+            href="/category/teen-books"
             className="text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             Teen Books
           </Link>
           <Link
             href="/cart"
             className="relative text-gray-700 hover:text-red-600"
+            onClick={closeMenu}
           >
             <AiOutlineShoppingCart size={28} />
             <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full px-2 text-xs">
